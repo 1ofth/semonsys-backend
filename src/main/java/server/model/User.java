@@ -1,13 +1,14 @@
 package server.model;
 
 import lombok.Data;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name= "user_lab")
+@Table(name = "user_lab")
 @Data
 public class User {
     @Id
@@ -16,7 +17,4 @@ public class User {
 
     @Column(name = "password", nullable = false)
     private String password;
-
-    public User(){}
-
 }

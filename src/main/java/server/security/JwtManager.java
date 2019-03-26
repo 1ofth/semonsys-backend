@@ -15,6 +15,7 @@ import javax.json.JsonObjectBuilder;
 import java.io.File;
 import java.io.FileInputStream;
 import java.security.*;
+import java.util.Arrays;
 
 @Singleton
 @Log
@@ -27,11 +28,11 @@ public class JwtManager {
         try {
             ks = KeyStore.getInstance("JKS");
         } catch (KeyStoreException e) {
-           log.warning(e.getMessage());
+            log.warning(e.getMessage());
         }
         String configDir = System.getProperty("jboss.server.config.dir");
         String keystorePath = configDir + File.separator + "jwt.keystore";
-        try(FileInputStream fis = new FileInputStream(keystorePath)) {
+        try (FileInputStream fis = new FileInputStream(keystorePath)) {
             assert ks != null;
             ks.load(fis, password);
             Key key = ks.getKey(alias, password);
@@ -53,8 +54,7 @@ public class JwtManager {
     public String createJwt(final String subject, final String[] roles) throws Exception {
         JWSSigner signer = new RSASSASigner(privateKey);
         JsonArrayBuilder rolesBuilder = Json.createArrayBuilder();
-        for (String role : roles) { rolesBuilder.add(role); }
-
+        Arrays.stream(roles).forEach(rolesBuilder::add);
         JsonObjectBuilder claimsBuilder = Json.createObjectBuilder()
                 .add("sub", subject)
                 .add("iss", ISSUER)

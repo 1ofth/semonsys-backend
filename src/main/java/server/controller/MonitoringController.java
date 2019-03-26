@@ -2,6 +2,7 @@ package server.controller;
 
 import shared.RemoteCommands;
 import shared.TopData;
+
 import javax.ejb.Stateless;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
@@ -48,8 +49,8 @@ public class MonitoringController {
                     .entity(e.getMessage())
                     .build();
         }
-            return Response.status(Response.Status.OK)
-                    .entity(response.toString())
-                    .build();
+        return Response.status(Response.Status.OK)
+                .entity(response.toString())
+                .build();
     }
 }
