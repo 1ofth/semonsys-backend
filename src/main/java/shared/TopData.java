@@ -1,18 +1,15 @@
 package shared;
 
-import lombok.*;
-
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.sql.Time;
 
-@Getter
-@Setter
-@AllArgsConstructor
+@Data
 @NoArgsConstructor
-@ToString
 @Entity
 @Table
 public class TopData implements Serializable {

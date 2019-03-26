@@ -1,8 +1,7 @@
-package server;
+package server.controller;
 
 import shared.RemoteCommands;
 import shared.TopData;
-
 import javax.ejb.Stateless;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
