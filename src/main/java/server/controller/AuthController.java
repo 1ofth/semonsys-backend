@@ -1,61 +1,74 @@
 package server.controller;
 
 import lombok.extern.java.Log;
-import server.model.Role;
 import server.model.User;
 import server.security.JwtManager;
-import server.service.UserService;
+import server.service.db.UserService;
+import server.service.logic.TokensService;
 
-import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.json.Json;
-import javax.json.JsonObject;
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
+import java.text.ParseException;
+import java.util.Date;
 
 @Stateless
 @Path("auth")
 @Log
 public class AuthController {
 
-    private static final String AUTHORIZATION_HEADER = "Authorization";
-    private static final String BEARER = "Bearer ";
-
     @Context
     private SecurityContext securityContext;
 
-    @EJB
+    @Inject
     private UserService userService;
 
-    @EJB
+    @Inject
     private JwtManager jwtManager;
+
+    @Inject
+    private TokensService tokensService;
+
+    @POST
+    @Path("/logout")
+    public Response logout() {
+        tokensService.clearRefreshTokens(securityContext.getUserPrincipal().getName());
+        return Response.ok("{message: 'logged out'}").build();
+    }
+
+    @POST
+    @Path("/refresh-tokens")
+    public Response refresh(@FormParam("refreshToken") String refreshToken,
+                            @Context HttpServletResponse response) {
+        User user = userService.findOne(securityContext.getUserPrincipal().getName());
+        if (user.getRefreshTokens().remove(refreshToken)) {
+            try {
+                if (((Date) jwtManager.getClaims(refreshToken).get("exp")).after(new Date())) {
+                    return tokensService.generateTokens(user);
+                }
+            } catch (ParseException e) {
+                log.warning(e.toString());
+                return Response.status(400).build();
+            }
+        }
+        return Response.status(400).build();
+    }
 
     @POST
     @Path("/login")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response postJWT(@FormParam("login") String login,
-                            @FormParam("password") String password,
-                            @Context HttpServletResponse response) {
+    public Response login(@FormParam("login") String login,
+                          @FormParam("password") String password,
+                          @Context HttpServletResponse response) {
         log.info("Authenticating " + login);
-        try {
-            User user = userService.findOne(login);
-            if (user != null && user.getPassword().equals(password)) {
-                if (user.getLogin() != null) {
-                    log.info("Generating JWT for org.jboss.user " + user.getLogin());
-                    String token = jwtManager.createJwt(user.getLogin(), new String[]{Role.USER});
-                    response.setHeader(AUTHORIZATION_HEADER, BEARER + token);
-                    JsonObject result = Json.createObjectBuilder()
-                            .add("user", user.getLogin())
-                            .build();
-                    return Response.ok(result).build();
-                }
-            }
-        } catch (Exception e) {
-            log.info(e.getMessage());
+        User user = userService.findOne(login);
+        if (user != null && user.getPassword().equals(password) && user.isConfirmed()) {
+            return tokensService.generateTokens(user);
         }
         return Response.status(Response.Status.UNAUTHORIZED).build();
     }
