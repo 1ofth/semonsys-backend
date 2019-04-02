@@ -26,7 +26,7 @@ public class TokensService {
         User user = userService.findOne(login);
         if (user != null) {
             user.getRefreshTokens().clear();
-            userService.saveUser(user);
+            userService.update(user);
         }
     }
 
@@ -34,7 +34,7 @@ public class TokensService {
         String token = jwtManager.createAccessToken(user.getLogin(), new String[]{Role.USER});
         String refreshToken = jwtManager.createRefreshToken(user.getLogin());
         user.getRefreshTokens().add(refreshToken);
-        userService.saveUser(user);
+        userService.update(user);
         JsonObject result = Json.createObjectBuilder()
                 .add("accessToken", token)
                 .add("refreshToken", refreshToken)

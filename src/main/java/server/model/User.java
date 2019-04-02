@@ -3,7 +3,6 @@ package server.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import javax.persistence.*;
 import java.util.List;
 
@@ -28,4 +27,11 @@ public class User {
     private List<String> refreshTokens;
 
     private Boolean verified;
+
+    private String verificationToken;
+
+    public User(String login, String password) {
+        this.login = login;
+        this.password = password;
+    }
 }

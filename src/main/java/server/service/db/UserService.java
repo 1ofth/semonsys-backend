@@ -15,8 +15,12 @@ public class UserService {
     @PersistenceContext(unitName = "provider")
     private EntityManager entityManager;
 
-    public void saveUser(User user) {
+    public void save(User user) {
         entityManager.persist(user);
+    }
+
+    public void update(User user) {
+        entityManager.merge(user);
     }
 
     public List<User> getAll() {
@@ -27,4 +31,9 @@ public class UserService {
         return entityManager.find(User.class, login);
     }
 
+    public User findUserByToken(String token) {
+        return entityManager.createQuery("select u from User u where u.verificationToken = :token", User.class)
+                .setParameter("token", token)
+                .getSingleResult();
+    }
 }
