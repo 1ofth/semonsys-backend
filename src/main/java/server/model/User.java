@@ -8,7 +8,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "user_lab")
+@Table(name = "t_user")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,10 +20,12 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
 
+    private String email;
+
     @ElementCollection
     @CollectionTable(name = "tokens",
             joinColumns = @JoinColumn(name = "user_login"))
     private List<String> refreshTokens;
 
-    private boolean isConfirmed;
+    private Boolean verified;
 }

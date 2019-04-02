@@ -17,10 +17,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
     <security-constraint>
         <web-resource-collection>
             <web-resource-name>Protected resources</web-resource-name>
-            <url-pattern>/top</url-pattern>
-            <url-pattern>/auth/claims</url-pattern>
-            <url-pattern>/auth/logout</url-pattern>
-            <url-pattern>/auth/refresh-tokens</url-pattern>
+            <url-pattern>/rest/secured/*</url-pattern>
         </web-resource-collection>
         <auth-constraint>
             <role-name>ROLE_USER</role-name>

@@ -31,8 +31,8 @@ public class UserServiceTest {
     @Test
     public void shouldGetUserList() {
         List<User> expected = new ArrayList<>(Arrays.asList(
-                new User("test1", "test1", Collections.emptyList(), true),
-                new User("test2", "test2", Collections.emptyList(), true)));
+                new User("test1", "test1", null, Collections.emptyList(), true),
+                new User("test2", "test2", null, Collections.emptyList(), true)));
 
         TypedQuery<User> mockedQuery = mock(TypedQuery.class);
         when(mockedQuery.getResultList()).thenReturn(expected);
@@ -46,7 +46,7 @@ public class UserServiceTest {
 
     @Test
     public void shouldSave() {
-        User user = new User("test", "test", Collections.emptyList(), true);
+        User user = new User("test", "test", null, Collections.emptyList(), true);
         doNothing().when(this.entityManager).persist(user);
         this.userService.saveUser(user);
         verify(this.entityManager).persist(user);
@@ -54,7 +54,7 @@ public class UserServiceTest {
 
     @Test
     public void shouldGetUserByLogin() {
-        User expected = new User("123", "345", Collections.emptyList(), true);
+        User expected = new User("123", "345", null, Collections.emptyList(), true);
         when(this.entityManager.find(ArgumentMatchers.any(), ArgumentMatchers.anyString()))
                 .thenReturn(expected);
         User actual = this.userService.findOne("123");

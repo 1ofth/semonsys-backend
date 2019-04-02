@@ -6,13 +6,13 @@ import server.model.User;
 import server.security.JwtManager;
 import server.service.db.UserService;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.ws.rs.core.Response;
 
-@ApplicationScoped
+@Stateless
 public class TokensService {
     @Setter
     @Inject

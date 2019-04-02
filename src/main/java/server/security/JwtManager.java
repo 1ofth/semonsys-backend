@@ -5,6 +5,8 @@ import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTParser;
 import lombok.extern.java.Log;
+
+import javax.ejb.Stateless;
 import javax.enterprise.context.ApplicationScoped;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
@@ -17,7 +19,7 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
 
-@ApplicationScoped
+@Stateless
 @Log
 public class JwtManager {
     static {

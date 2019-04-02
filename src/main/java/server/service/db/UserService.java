@@ -2,16 +2,17 @@ package server.service.db;
 
 import lombok.Setter;
 import server.model.User;
-import javax.enterprise.context.ApplicationScoped;
+
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
-@ApplicationScoped
+@Stateless
 public class UserService {
 
-    @PersistenceContext(unitName = "provider")
     @Setter
+    @PersistenceContext(unitName = "provider")
     private EntityManager entityManager;
 
     public void saveUser(User user) {

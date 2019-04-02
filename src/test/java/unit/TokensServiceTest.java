@@ -30,7 +30,7 @@ public class TokensServiceTest {
 
     @Test
     public void clearRefreshTokens() {
-        User expected = new User("123", "345",
+        User expected = new User("123", "345", null,
                 new ArrayList<>(Collections.singletonList(("my-test-token"))), true);
 
         when(this.userService.findOne(ArgumentMatchers.anyString()))
@@ -43,7 +43,7 @@ public class TokensServiceTest {
 
     @Test
     public void generateTokens() {
-        User expected = new User("123", "345",
+        User expected = new User("123", "345", null,
                 new ArrayList<>(Collections.singletonList(("my-test-token"))), true);
         doNothing().when(this.userService).saveUser(ArgumentMatchers.any());
 

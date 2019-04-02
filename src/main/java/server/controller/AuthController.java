@@ -6,10 +6,14 @@ import server.security.JwtManager;
 import server.service.db.UserService;
 import server.service.logic.TokensService;
 
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -18,31 +22,31 @@ import java.text.ParseException;
 import java.util.Date;
 
 @Stateless
-@Path("auth")
+@Path("/rest")
 @Log
 public class AuthController {
 
     @Context
     private SecurityContext securityContext;
 
-    @Inject
+    @EJB
     private UserService userService;
 
-    @Inject
+    @EJB
     private JwtManager jwtManager;
 
-    @Inject
+    @EJB
     private TokensService tokensService;
 
     @POST
-    @Path("/logout")
+    @Path("/secured/auth/logout")
     public Response logout() {
         tokensService.clearRefreshTokens(securityContext.getUserPrincipal().getName());
         return Response.ok("{message: 'logged out'}").build();
     }
 
     @POST
-    @Path("/refresh-tokens")
+    @Path("/secured/auth/refresh-tokens")
     public Response refresh(@FormParam("refreshToken") String refreshToken,
                             @Context HttpServletResponse response) {
         User user = userService.findOne(securityContext.getUserPrincipal().getName());
@@ -60,14 +64,14 @@ public class AuthController {
     }
 
     @POST
-    @Path("/login")
+    @Path("/auth/login")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response login(@FormParam("login") String login,
                           @FormParam("password") String password,
                           @Context HttpServletResponse response) {
         log.info("Authenticating " + login);
         User user = userService.findOne(login);
-        if (user != null && user.getPassword().equals(password) && user.isConfirmed()) {
+        if (user != null && user.getPassword().equals(password)) {
             return tokensService.generateTokens(user);
         }
         return Response.status(Response.Status.UNAUTHORIZED).build();
