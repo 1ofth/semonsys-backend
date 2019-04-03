@@ -5,6 +5,7 @@ import server.model.User;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
@@ -27,13 +28,17 @@ public class UserService {
         return entityManager.createQuery("select u from User u", User.class).getResultList();
     }
 
-    public User findOne(String login) {
+    public User find(String login) {
         return entityManager.find(User.class, login);
     }
 
     public User findUserByToken(String token) {
-        return entityManager.createQuery("select u from User u where u.verificationToken = :token", User.class)
-                .setParameter("token", token)
-                .getSingleResult();
+        try {
+            return entityManager.createQuery("select u from User u where u.verificationToken = :token", User.class)
+                    .setParameter("token", token)
+                    .getSingleResult();
+        } catch (NoResultException n) {
+            return null;
+        }
     }
 }

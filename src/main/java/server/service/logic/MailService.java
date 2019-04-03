@@ -3,7 +3,6 @@ package server.service.logic;
 import lombok.Setter;
 import lombok.extern.java.Log;
 import server.model.User;
-import server.service.db.UserService;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -12,27 +11,25 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.IOException;
 import java.util.Properties;
-import java.util.UUID;
 
 @Stateless
 @Log
 public class MailService {
     @Setter
     @Inject
-    private UserService userService;
+    private TokensService tokensService;
 
     private static final String senderEmail = "semonsys.mailer@yandex.ru";
     private static final String senderPassword = "WtJ&qqVer+W)9n/b";
 
     public void sendTo(User user, String appUrl) {
-        String token = UUID.randomUUID().toString();
-        user.setVerificationToken(token);
-        userService.update(user);
-        String url = appUrl + "/confirm/" + token;
-        Properties props = new  Properties();
+        tokensService.generateVerificationToken(user);
+        String url = appUrl + "/confirm/" + user.getVerificationToken();
+        Properties props = new Properties();
         try {
             props.load(MailService.class.getResourceAsStream("/server.properties"));
-        } catch (IOException ignored) {}
+        } catch (IOException ignored) {
+        }
 
         Session session = Session.getInstance(props, new javax.mail.Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {

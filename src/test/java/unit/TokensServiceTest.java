@@ -33,7 +33,7 @@ public class TokensServiceTest {
         User expected = new User("123", "345", null,
                 new ArrayList<>(Collections.singletonList(("my-test-token"))), true, null);
 
-        when(this.userService.findOne(ArgumentMatchers.anyString()))
+        when(this.userService.find(ArgumentMatchers.anyString()))
                 .thenReturn(expected);
         doNothing().when(this.userService).update(ArgumentMatchers.any());
         this.tokensService.clearRefreshTokens(expected.getLogin());
@@ -58,4 +58,20 @@ public class TokensServiceTest {
 
     }
 
+    @Test
+    public void generateVerificationToken() {
+        User expected = new User("123", "345");
+        assertNull(expected.getVerificationToken());
+        doAnswer(invocation -> {
+            Object arg0 = invocation.getArgument(0);
+            User user = (User) arg0;
+            expected.setVerificationToken(user.getVerificationToken());
+            return null;
+        }).when(this.userService).update(ArgumentMatchers.any());
+
+        this.tokensService.generateVerificationToken(expected);
+
+        verify(this.userService).update(ArgumentMatchers.any());
+        assertNotNull(expected.getVerificationToken());
+    }
 }

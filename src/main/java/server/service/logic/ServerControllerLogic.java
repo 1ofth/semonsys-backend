@@ -45,7 +45,7 @@ public class ServerControllerLogic {
     // adds one server to user list. Uses default values for port, activated, activation data
     public Response addServer(String userName, String serverName, String description, String ip, UserService userService,
                               ServerService serverService) {
-        User user = userService.findOne(userName);
+        User user = userService.find(userName);
 
         if (user == null) {
             return Response.status(400, "User with name " + userName + " was not found").build();

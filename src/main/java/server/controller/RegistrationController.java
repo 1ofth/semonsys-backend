@@ -33,7 +33,7 @@ public class RegistrationController {
                                     @FormParam("password") String password,
                                     @FormParam("email") String email,
                                     @Context HttpServletRequest request) {
-        if (validateCredentials(login, password) && userService.findOne(login) == null) {
+        if (validateCredentials(login, password) && userService.find(login) == null) {
             User user = new User(login, password, email, new ArrayList<>(), false, null);
             userService.save(user);
             String appUrl = request.getRequestURL().toString().replace("/registration", "");
@@ -55,7 +55,7 @@ public class RegistrationController {
     @POST
     @Path("/secured/activate")
     public Response sendConfirmationEmail(@Context HttpServletRequest request) {
-        User user = userService.findOne(securityContext.getUserPrincipal().getName());
+        User user = userService.find(securityContext.getUserPrincipal().getName());
         if (user.getEmail() == null || user.getVerified()) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
@@ -71,6 +71,7 @@ public class RegistrationController {
         if (user == null || !user.getVerificationToken().equals(token)) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
+        user.setVerificationToken(null);
         user.setVerified(true);
         userService.update(user);
         return Response.ok("{message: 'Illuminati confirmed'}").build();

@@ -44,6 +44,24 @@ public class UserServiceTest {
     }
 
     @Test
+    public void shouldGetUserByToken() {
+        User expected = new User("test1", "test1",
+                null, null, true, "1a2b3c");
+
+        TypedQuery<User> mockedQuery = mock(TypedQuery.class);
+
+        when(mockedQuery.setParameter(anyString(), anyString())).thenReturn(mockedQuery);
+        when(mockedQuery.getSingleResult()).thenReturn(expected);
+
+        when(this.entityManager.createQuery(anyString(), any(Class.class)))
+                .thenReturn(mockedQuery);
+
+        User actual = this.userService.findUserByToken("1a2b3c");
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
     public void shouldSave() {
         User user = new User("test", "test");
         doNothing().when(this.entityManager).persist(user);
@@ -56,7 +74,7 @@ public class UserServiceTest {
         User expected = new User("123", "345");
         when(this.entityManager.find(ArgumentMatchers.any(), ArgumentMatchers.anyString()))
                 .thenReturn(expected);
-        User actual = this.userService.findOne("123");
+        User actual = this.userService.find("123");
         assertEquals(expected, actual);
     }
 
@@ -64,7 +82,7 @@ public class UserServiceTest {
     public void shouldGetNull() {
         when(this.entityManager.find(ArgumentMatchers.any(), ArgumentMatchers.anyString()))
                 .thenReturn(null);
-        User actual = this.userService.findOne("123");
+        User actual = this.userService.find("123");
         assertNull(actual);
     }
 }

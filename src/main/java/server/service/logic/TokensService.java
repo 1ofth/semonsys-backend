@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.ws.rs.core.Response;
+import java.util.UUID;
 
 @Stateless
 public class TokensService {
@@ -22,8 +23,14 @@ public class TokensService {
     @Inject
     private UserService userService;
 
+    public void generateVerificationToken(User user) {
+        String token = UUID.randomUUID().toString();
+        user.setVerificationToken(token);
+        userService.update(user);
+    }
+
     public void clearRefreshTokens(String login) {
-        User user = userService.findOne(login);
+        User user = userService.find(login);
         if (user != null) {
             user.getRefreshTokens().clear();
             userService.update(user);
@@ -38,7 +45,7 @@ public class TokensService {
         JsonObject result = Json.createObjectBuilder()
                 .add("accessToken", token)
                 .add("refreshToken", refreshToken)
-                .add("expires_in",   (System.currentTimeMillis() / 1000) + 14400)
+                .add("expires_in", (System.currentTimeMillis() / 1000) + 14400)
                 .build();
         return Response.ok(result).header("Authorization", "Bearer " + token).build();
     }
