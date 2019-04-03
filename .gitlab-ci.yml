@@ -1,0 +1,19 @@
+image: maven:3-jdk-8
+
+cache:
+  paths:
+    - .m2/repository
+
+variables:
+  MAVEN_CLI_OPTS: "-Dmaven.repo.local=.m2/repository --batch-mode"
+
+stages:
+  - compile
+
+compile:
+  stage: compile
+  only:
+    - dev
+    - master
+  script:
+    - 'mvn $MAVEN_CLI_OPTS clean compile'
