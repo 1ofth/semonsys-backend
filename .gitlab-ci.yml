@@ -10,6 +10,7 @@ variables:
 stages:
   - compile
   - analysis
+  - test
 
 compile:
   stage: compile
@@ -38,3 +39,11 @@ checkstyle:
     - master
   script:
     - 'mvn $MAVEN_CLI_OPTS clean checkstyle:check'
+
+test:
+  stage: test
+  only:
+    - dev
+    - master
+  script:
+    - 'mvn $MAVEN_CLI_OPTS clean test'
