@@ -40,6 +40,14 @@ checkstyle:
   script:
     - 'mvn $MAVEN_CLI_OPTS clean checkstyle:check'
 
+findbugs:
+  stage: analysis
+  only:
+    - dev
+    - master
+  script:
+    - 'mvn $MAVEN_CLI_OPTS clean compile findbugs:check'
+
 test:
   stage: test
   only:
