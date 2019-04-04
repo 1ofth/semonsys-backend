@@ -9,6 +9,7 @@ variables:
 
 stages:
   - compile
+  - analysis
 
 compile:
   stage: compile
@@ -17,3 +18,15 @@ compile:
     - master
   script:
     - 'mvn $MAVEN_CLI_OPTS clean compile'
+
+pmd:
+  stage: analysis
+  only:
+    - dev
+    - master
+  script:
+    - 'mvn $MAVEN_CLI_OPTS clean pmd:check'
+  artifacts:
+    paths:
+      - target/site/pmd.html
+    when: on_failure
