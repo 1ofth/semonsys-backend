@@ -30,3 +30,11 @@ pmd:
     paths:
       - target/site/pmd.html
     when: on_failure
+
+checkstyle:
+  stage: analysis
+  only:
+    - dev
+    - master
+  script:
+    - 'mvn $MAVEN_CLI_OPTS clean checkstyle:check'

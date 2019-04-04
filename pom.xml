@@ -188,6 +188,15 @@
             <artifactId>maven-pmd-plugin</artifactId>
             <version>3.11.0</version>
           </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>3.0.0</version>
+            <configuration>
+              <consoleOutput>true</consoleOutput>
+              <failsOnError>true</failsOnError>
+            </configuration>
+          </plugin>
       </plugins>
   </build>
 </project>
