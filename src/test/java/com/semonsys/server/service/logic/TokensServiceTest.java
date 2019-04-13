@@ -1,12 +1,11 @@
-package unit;
+package com.semonsys.server.service.logic;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentMatchers;
-import server.model.User;
-import server.security.JwtManager;
-import server.service.db.UserService;
-import server.service.logic.TokensService;
+import com.semonsys.server.model.User;
+import com.semonsys.server.security.JwtManager;
+import com.semonsys.server.service.db.UserService;
 
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;

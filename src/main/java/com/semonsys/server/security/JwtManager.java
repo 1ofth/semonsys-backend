@@ -1,4 +1,4 @@
-package server.security;
+package com.semonsys.server.security;
 
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.RSASSASigner;
@@ -6,13 +6,11 @@ import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTParser;
 import lombok.extern.java.Log;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
-import javax.enterprise.context.ApplicationScoped;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObjectBuilder;
-import java.io.File;
-import java.io.FileInputStream;
 import java.security.*;
 import java.text.ParseException;
 import java.util.Arrays;
@@ -22,40 +20,21 @@ import java.util.UUID;
 @Stateless
 @Log
 public class JwtManager {
-    static {
-        char[] password = "secret".toCharArray();
-        String alias = "alias";
-        PrivateKey pk = null;
-        KeyStore ks = null;
-        try {
-            ks = KeyStore.getInstance("JKS");
-        } catch (KeyStoreException e) {
-            log.warning(e.getMessage());
-        }
-        String configDir = System.getProperty("jboss.server.config.dir");
-        String keystorePath = configDir + File.separator + "jwt.keystore";
-        try (FileInputStream fis = new FileInputStream(keystorePath)) {
-            assert ks != null;
-            ks.load(fis, password);
-            Key key = ks.getKey(alias, password);
-            if (key instanceof PrivateKey) {
-                pk = (PrivateKey) key;
-            }
-        } catch (Exception e) {
-            log.warning(e.getMessage());
-        }
-        privateKey = pk;
+
+    @PostConstruct
+    public void init() {
+        privateKey = KeyLoader.load();
     }
 
-    private static final PrivateKey privateKey;
+    private static PrivateKey privateKey;
     private static final String CLAIM_ROLES = "groups";
     private static final String ISSUER = "quickstart-jwt-issuer";
     private static final String AUDIENCE = "jwt-audience";
     private static final String REFRESH_TOKEN = "ROLE_REFRESH_TOKEN";
 
     public Map<String, Object> getClaims(String token) throws ParseException {
-            JWT j = JWTParser.parse(token);
-            return j.getJWTClaimsSet().getClaims();
+        JWT j = JWTParser.parse(token);
+        return j.getJWTClaimsSet().getClaims();
     }
 
     public String createAccessToken(final String subject, final String[] roles) {

@@ -1,4 +1,4 @@
-package shared;
+package com.semonsys.shared;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

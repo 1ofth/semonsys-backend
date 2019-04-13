@@ -1,10 +1,10 @@
-package server.service.logic;
+package com.semonsys.server.service.logic;
 
 import lombok.Setter;
-import server.model.Role;
-import server.model.User;
-import server.security.JwtManager;
-import server.service.db.UserService;
+import com.semonsys.server.model.Role;
+import com.semonsys.server.model.User;
+import com.semonsys.server.security.JwtManager;
+import com.semonsys.server.service.db.UserService;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;

@@ -1,10 +1,9 @@
-package unit;
+package com.semonsys.server.service.db;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentMatchers;
-import server.model.User;
-import server.service.db.UserService;
+import com.semonsys.server.model.User;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;

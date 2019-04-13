@@ -1,9 +1,9 @@
-package server.controller;
+package com.semonsys.server.controller;
 
+import com.semonsys.server.service.logic.RegistrationService;
 import lombok.extern.java.Log;
-import server.model.User;
-import server.service.db.UserService;
-import server.service.logic.MailService;
+import com.semonsys.server.model.User;
+import com.semonsys.server.service.db.UserService;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -22,7 +22,7 @@ public class RegistrationController {
     private SecurityContext securityContext;
 
     @Inject
-    private MailService mailService;
+    private RegistrationService registrationService;
 
     @Inject
     private UserService userService;
@@ -37,7 +37,7 @@ public class RegistrationController {
             User user = new User(login, password, email, new ArrayList<>(), false, null);
             userService.save(user);
             String appUrl = request.getRequestURL().toString().replace("/registration", "");
-            mailService.sendTo(user, appUrl);
+            registrationService.sendConfirmationMessage(user, appUrl);
             return Response.status(Response.Status.CREATED)
                     .entity("{user: '" + login + "'}")
                     .build();
@@ -60,7 +60,7 @@ public class RegistrationController {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
         String appUrl = request.getRequestURL().toString().replace("/secured/activate", "");
-        mailService.sendTo(user, appUrl);
+        registrationService.sendConfirmationMessage(user, appUrl);
         return Response.ok().build();
     }
 

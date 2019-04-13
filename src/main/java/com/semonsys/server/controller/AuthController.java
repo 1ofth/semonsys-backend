@@ -1,10 +1,10 @@
-package server.controller;
+package com.semonsys.server.controller;
 
 import lombok.extern.java.Log;
-import server.model.User;
-import server.security.JwtManager;
-import server.service.db.UserService;
-import server.service.logic.TokensService;
+import com.semonsys.server.model.User;
+import com.semonsys.server.security.JwtManager;
+import com.semonsys.server.service.db.UserService;
+import com.semonsys.server.service.logic.TokensService;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;

@@ -1,10 +1,10 @@
-package server.service.logic;
+package com.semonsys.server.service.logic;
 
 import lombok.extern.java.Log;
-import server.model.Server;
-import server.model.User;
-import server.service.db.ServerService;
-import server.service.db.UserService;
+import com.semonsys.server.model.Server;
+import com.semonsys.server.model.User;
+import com.semonsys.server.service.db.ServerService;
+import com.semonsys.server.service.db.UserService;
 
 import javax.ejb.Stateless;
 import javax.json.Json;
