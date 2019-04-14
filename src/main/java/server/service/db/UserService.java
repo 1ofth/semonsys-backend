@@ -15,7 +15,7 @@ public class UserService {
     @PersistenceContext(unitName = "provider")
     private EntityManager entityManager;
 
-    public void saveUser(User user) {
+    public void saveUser(final User user) {
         entityManager.persist(user);
     }
 
@@ -23,7 +23,7 @@ public class UserService {
         return entityManager.createQuery("select u from User u", User.class).getResultList();
     }
 
-    public User findOne(String login) {
+    public User findOne(final String login) {
         return entityManager.find(User.class, login);
     }
 

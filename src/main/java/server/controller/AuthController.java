@@ -8,7 +8,6 @@ import server.service.logic.TokensService;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -47,8 +46,8 @@ public class AuthController {
 
     @POST
     @Path("/secured/auth/refresh-tokens")
-    public Response refresh(@FormParam("refreshToken") String refreshToken,
-                            @Context HttpServletResponse response) {
+    public Response refresh(@FormParam("refreshToken") final String refreshToken,
+                            @Context final HttpServletResponse response) {
         User user = userService.findOne(securityContext.getUserPrincipal().getName());
         if (user.getRefreshTokens().remove(refreshToken)) {
             try {
@@ -57,18 +56,18 @@ public class AuthController {
                 }
             } catch (ParseException e) {
                 log.warning(e.toString());
-                return Response.status(400).build();
+                return Response.status(Response.Status.BAD_REQUEST).build();
             }
         }
-        return Response.status(400).build();
+        return Response.status(Response.Status.BAD_REQUEST).build();
     }
 
     @POST
     @Path("/auth/login")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response login(@FormParam("login") String login,
-                          @FormParam("password") String password,
-                          @Context HttpServletResponse response) {
+    public Response login(@FormParam("login") final String login,
+                          @FormParam("password") final String password,
+                          @Context final HttpServletResponse response) {
         log.info("Authenticating " + login);
         User user = userService.findOne(login);
         if (user != null && user.getPassword().equals(password)) {

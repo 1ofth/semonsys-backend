@@ -14,6 +14,9 @@ import javax.ws.rs.core.Response;
 
 @Stateless
 public class TokensService {
+    private static final int SECONDS_IN_FIVE_HOURS = 5 * 60 * 60;
+    private static final int MILLISECONDS_IN_SECOND = 1000;
+
     @Setter
     @Inject
     private JwtManager jwtManager;
@@ -22,7 +25,7 @@ public class TokensService {
     @Inject
     private UserService userService;
 
-    public void clearRefreshTokens(String login) {
+    public void clearRefreshTokens(final String login) {
         User user = userService.findOne(login);
         if (user != null) {
             user.getRefreshTokens().clear();
@@ -30,7 +33,7 @@ public class TokensService {
         }
     }
 
-    public Response generateTokens(User user) {
+    public Response generateTokens(final User user) {
         String token = jwtManager.createAccessToken(user.getLogin(), new String[]{Role.USER});
         String refreshToken = jwtManager.createRefreshToken(user.getLogin());
         user.getRefreshTokens().add(refreshToken);
@@ -38,7 +41,8 @@ public class TokensService {
         JsonObject result = Json.createObjectBuilder()
                 .add("accessToken", token)
                 .add("refreshToken", refreshToken)
-                .add("expires_in",   (System.currentTimeMillis() / 1000) + 14400)
+                .add("expires_in", System.currentTimeMillis() / MILLISECONDS_IN_SECOND
+                    + SECONDS_IN_FIVE_HOURS)
                 .build();
         return Response.ok(result).header("Authorization", "Bearer " + token).build();
     }

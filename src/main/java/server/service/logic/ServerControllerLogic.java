@@ -20,8 +20,9 @@ import java.util.Objects;
 public class ServerControllerLogic {
 
     // finds out all servers of given user. If name of server is given then it returns only that server but in list too
-    public Response getServers(String userName, Long id, ServerService serverService) {
-        ArrayList<Server> list = new ArrayList<>();
+    public Response getServers(final String userName,
+                               final Long id, final ServerService serverService) {
+        List<Server> list = new ArrayList<>();
 
         if (id != null) {
             Server server = serverService.find(id);
@@ -31,32 +32,37 @@ public class ServerControllerLogic {
                 return Response.status(Response.Status.UNAUTHORIZED).build();
             }
         } else {
-            list = (ArrayList<Server>) serverService.find(userName);
+            list = serverService.find(userName);
         }
 
         if (list != null) {
             JsonArray jsonArray = convertListToJson(list);
             return Response.ok(jsonArray).build();
         } else {
-            return Response.status(400, "User " + userName + " doesn't have any servers").build();
+          return Response.status(Response.Status.BAD_REQUEST)
+              .entity("User " + userName + " doesn't have any servers").build();
         }
     }
 
     // adds one server to user list. Uses default values for port, activated, activation data
-    public Response addServer(String userName, String serverName, String description, String ip, UserService userService,
-                              ServerService serverService) {
+    public Response addServer(final String userName, final String serverName,
+                              final String description, final String ip,
+                              final UserService userService, final ServerService serverService) {
         User user = userService.findOne(userName);
 
         if (user == null) {
-            return Response.status(400, "User with name " + userName + " was not found").build();
+            return Response.status(Response.Status.BAD_REQUEST)
+                .entity("User with name " + userName + " was not found").build();
         }
 
         if (ip == null) {
-            return Response.status(400, "Ip of server is needed").build();
+            return Response.status(Response.Status.BAD_REQUEST)
+                .entity("Ip of server is needed").build();
         }
 
         if (serverName == null) {
-            return Response.status(400, "Name of server is needed").build();
+            return Response.status(Response.Status.BAD_REQUEST)
+                .entity("Name of server is needed").build();
         }
 
         Server server = new Server(user, serverName, description, ip);
@@ -66,7 +72,10 @@ public class ServerControllerLogic {
         return Response.ok().build();
     }
 
-    public Response updateServer(Long id, String name, String description, String ip, String port, String userName, ServerService serverService) {
+    public Response updateServer(final Long id, final String name,
+                                 final String description, final String ip,
+                                 final String port, final String userName,
+                                 final ServerService serverService) {
         log.info("Trying to update server with income data:\n\tid: " + id + "\n\tname: " + name + "\n\tdescr: "
             + description + "\n\tip: " + ip + "\n\tport: " + port + "\n");
 
@@ -74,11 +83,13 @@ public class ServerControllerLogic {
             Server server = serverService.find(id);
 
             if (server == null) {
-                return Response.status(400, "Server with name " + name + " was not found").build();
+                return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Server with name " + name + " was not found").build();
             }
 
             if (!server.getUser().getLogin().equals(userName)) {
-                return Response.status(400, "User must be an owner of a server").build();
+                return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("User must be an owner of a server").build();
             }
 
             if (ip != null) {
@@ -101,11 +112,13 @@ public class ServerControllerLogic {
 
             return Response.ok().build();
         } else {
-            return Response.status(400, "Id of given server is needed").build();
+            return Response.status(Response.Status.BAD_REQUEST)
+                .entity("Id of given server is needed").build();
         }
     }
 
-    public Response deleteServer(String userName, Long id, ServerService serverService) {
+    public Response deleteServer(final String userName, final Long id,
+                                 final ServerService serverService) {
         if (id == null) {
             serverService.remove(userName);
         } else {
@@ -115,7 +128,7 @@ public class ServerControllerLogic {
         return Response.ok().build();
     }
 
-    private JsonArray convertListToJson(List<Server> list) {
+    private JsonArray convertListToJson(final List<Server> list) {
         if (list != null) {
             JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
             list.stream()

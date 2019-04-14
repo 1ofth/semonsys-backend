@@ -6,7 +6,15 @@ import server.service.logic.ServerControllerLogic;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -31,7 +39,7 @@ public class ServerController {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
-    public Response getServers(@PathParam("id") Long id) {
+    public Response getServers(@PathParam("id") final Long id) {
 
         return logic.getServers(securityContext.getUserPrincipal().getName(), id, serverService);
     }
@@ -45,9 +53,9 @@ public class ServerController {
 
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response addServer(@FormParam("name") String serverName,
-                              @FormParam("description") String description,
-                              @FormParam("ip") String ip) {
+    public Response addServer(@FormParam("name") final String serverName,
+                              @FormParam("description") final String description,
+                              @FormParam("ip") final String ip) {
 
         return logic.addServer(securityContext.getUserPrincipal().getName(), serverName, description, ip,
             userService, serverService);
@@ -55,11 +63,11 @@ public class ServerController {
 
     @PUT
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response changeServer(@FormParam("id") Long id,
-                                 @FormParam("name") String name,
-                                 @FormParam("description") String description,
-                                 @FormParam("ip") String ip,
-                                 @FormParam("port") String port) {
+    public Response changeServer(@FormParam("id") final Long id,
+                                 @FormParam("name") final String name,
+                                 @FormParam("description") final String description,
+                                 @FormParam("ip") final String ip,
+                                 @FormParam("port") final String port) {
 
         return logic.updateServer(id, name, description, ip, port, securityContext.getUserPrincipal().getName(),
             serverService);
@@ -67,7 +75,7 @@ public class ServerController {
 
     @DELETE
     @Path("/{id}")
-    public Response removeServer(@PathParam("id") Long id) {
+    public Response removeServer(@PathParam("id") final Long id) {
 
         return logic.deleteServer(securityContext.getUserPrincipal().getName(), id, serverService);
     }

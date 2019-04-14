@@ -14,10 +14,10 @@ public class ServerService {
     @PersistenceContext(unitName = "provider")
     private EntityManager entityManager;
 
-    public Server find(String userName, String serverName) {
+    public Server find(final String userName, final String serverName) {
         try {
-            return entityManager.createQuery("select s from Server as s where s.user.login = :userLogin " +
-                "and s.name LIKE :name", Server.class)
+            return entityManager.createQuery("select s from Server as s where s.user.login = :userLogin "
+                + "and s.name LIKE :name", Server.class)
                 .setParameter("userLogin", userName)
                 .setParameter("name", serverName)
                 .getSingleResult();
@@ -27,7 +27,7 @@ public class ServerService {
         }
     }
 
-    public List<Server> find(String userName) {
+    public List<Server> find(final String userName) {
         try {
             return entityManager.createQuery("select s from Server as s where s.user.login = :userLogin", Server.class)
                 .setParameter("userLogin", userName)
@@ -37,19 +37,19 @@ public class ServerService {
         }
     }
 
-    public Server find(Long id) {
+    public Server find(final Long id) {
         return entityManager.find(Server.class, id);
     }
 
-    public void save(Server server) {
+    public void save(final Server server) {
         entityManager.persist(server);
     }
 
-    public void update(Server server) {
+    public void update(final Server server) {
         entityManager.merge(server);
     }
 
-    public boolean remove(String userName, Long id) {
+    public boolean remove(final String userName, final Long id) {
         int amount = entityManager.createQuery("delete from Server as s where s.user.login = :user AND s.id = :id")
             .setParameter("id", id)
             .setParameter("user", userName)
@@ -58,7 +58,7 @@ public class ServerService {
         return amount > 0;
     }
 
-    public boolean remove(String userName) {
+    public boolean remove(final String userName) {
         int amount = entityManager.createQuery("delete from Server as s where s.user.login = :user")
             .setParameter("user", userName)
             .executeUpdate();
