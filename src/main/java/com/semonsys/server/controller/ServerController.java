@@ -1,8 +1,8 @@
-package server.controller;
+package com.semonsys.server.controller;
 
-import server.service.db.ServerService;
-import server.service.db.UserService;
-import server.service.logic.ServerControllerLogic;
+import com.semonsys.server.service.db.ServerService;
+import com.semonsys.server.service.db.UserService;
+import com.semonsys.server.service.logic.ServerControllerLogic;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;

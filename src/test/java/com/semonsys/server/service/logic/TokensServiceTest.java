@@ -1,12 +1,11 @@
-package unit;
+package com.semonsys.server.service.logic;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentMatchers;
-import server.model.User;
-import server.security.JwtManager;
-import server.service.db.UserService;
-import server.service.logic.TokensService;
+import com.semonsys.server.model.User;
+import com.semonsys.server.security.JwtManager;
+import com.semonsys.server.service.db.UserService;
 
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
@@ -31,21 +30,21 @@ public class TokensServiceTest {
     @Test
     public void clearRefreshTokens() {
         User expected = new User("123", "345", null,
-                new ArrayList<>(Collections.singletonList(("my-test-token"))), true);
+                new ArrayList<>(Collections.singletonList(("my-test-token"))), true, null);
 
-        when(this.userService.findOne(ArgumentMatchers.anyString()))
+        when(this.userService.find(ArgumentMatchers.anyString()))
                 .thenReturn(expected);
-        doNothing().when(this.userService).saveUser(ArgumentMatchers.any());
+        doNothing().when(this.userService).update(ArgumentMatchers.any());
         this.tokensService.clearRefreshTokens(expected.getLogin());
         assertEquals(Collections.emptyList(), expected.getRefreshTokens());
-        verify(this.userService).saveUser(ArgumentMatchers.any());
+        verify(this.userService).update(ArgumentMatchers.any());
     }
 
     @Test
     public void generateTokens() {
         User expected = new User("123", "345", null,
-                new ArrayList<>(Collections.singletonList(("my-test-token"))), true);
-        doNothing().when(this.userService).saveUser(ArgumentMatchers.any());
+                new ArrayList<>(Collections.singletonList(("my-test-token"))), true, null);
+        doNothing().when(this.userService).update(ArgumentMatchers.any());
 
         when(this.jwtManager.createAccessToken(ArgumentMatchers.anyString(), ArgumentMatchers.any()))
                 .thenReturn("access-token");
@@ -54,8 +53,24 @@ public class TokensServiceTest {
                 .thenReturn("refresh-token");
         Response response = this.tokensService.generateTokens(expected);
         assertEquals(response.getStatus(), Response.Status.OK.getStatusCode());
-        verify(this.userService).saveUser(ArgumentMatchers.any());
+        verify(this.userService).update(ArgumentMatchers.any());
 
     }
 
+    @Test
+    public void generateVerificationToken() {
+        User expected = new User("123", "345");
+        assertNull(expected.getVerificationToken());
+        doAnswer(invocation -> {
+            Object arg0 = invocation.getArgument(0);
+            User user = (User) arg0;
+            expected.setVerificationToken(user.getVerificationToken());
+            return null;
+        }).when(this.userService).update(ArgumentMatchers.any());
+
+        this.tokensService.generateVerificationToken(expected);
+
+        verify(this.userService).update(ArgumentMatchers.any());
+        assertNotNull(expected.getVerificationToken());
+    }
 }

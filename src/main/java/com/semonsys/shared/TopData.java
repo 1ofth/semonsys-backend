@@ -1,4 +1,4 @@
-package shared;
+package com.semonsys.shared;
 
 import lombok.Data;
 

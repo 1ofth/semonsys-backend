@@ -1,16 +1,9 @@
-package server.model;
+package com.semonsys.server.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
@@ -20,10 +13,10 @@ import java.util.List;
 @NoArgsConstructor
 public class User {
     @Id
-    @Column(nullable = false)
+    @Column(name = "login", nullable = false)
     private String login;
 
-    @Column(nullable = false)
+    @Column(name = "password", nullable = false)
     private String password;
 
     private String email;
@@ -34,4 +27,11 @@ public class User {
     private List<String> refreshTokens;
 
     private Boolean verified;
+
+    private String verificationToken;
+
+    public User(String login, String password) {
+        this.login = login;
+        this.password = password;
+    }
 }

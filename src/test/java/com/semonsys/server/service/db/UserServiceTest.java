@@ -1,17 +1,15 @@
-package unit;
+package com.semonsys.server.service.db;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentMatchers;
-import server.model.User;
-import server.service.db.UserService;
+import com.semonsys.server.model.User;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -31,8 +29,8 @@ public class UserServiceTest {
     @Test
     public void shouldGetUserList() {
         List<User> expected = new ArrayList<>(Arrays.asList(
-                new User("test1", "test1", null, Collections.emptyList(), true),
-                new User("test2", "test2", null, Collections.emptyList(), true)));
+                new User("test1", "test1"),
+                new User("test2", "test2")));
 
         TypedQuery<User> mockedQuery = mock(TypedQuery.class);
         when(mockedQuery.getResultList()).thenReturn(expected);
@@ -45,19 +43,37 @@ public class UserServiceTest {
     }
 
     @Test
+    public void shouldGetUserByToken() {
+        User expected = new User("test1", "test1",
+                null, null, true, "1a2b3c");
+
+        TypedQuery<User> mockedQuery = mock(TypedQuery.class);
+
+        when(mockedQuery.setParameter(anyString(), anyString())).thenReturn(mockedQuery);
+        when(mockedQuery.getSingleResult()).thenReturn(expected);
+
+        when(this.entityManager.createQuery(anyString(), any(Class.class)))
+                .thenReturn(mockedQuery);
+
+        User actual = this.userService.findUserByToken("1a2b3c");
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
     public void shouldSave() {
-        User user = new User("test", "test", null, Collections.emptyList(), true);
+        User user = new User("test", "test");
         doNothing().when(this.entityManager).persist(user);
-        this.userService.saveUser(user);
+        this.userService.save(user);
         verify(this.entityManager).persist(user);
     }
 
     @Test
     public void shouldGetUserByLogin() {
-        User expected = new User("123", "345", null, Collections.emptyList(), true);
+        User expected = new User("123", "345");
         when(this.entityManager.find(ArgumentMatchers.any(), ArgumentMatchers.anyString()))
                 .thenReturn(expected);
-        User actual = this.userService.findOne("123");
+        User actual = this.userService.find("123");
         assertEquals(expected, actual);
     }
 
@@ -65,7 +81,7 @@ public class UserServiceTest {
     public void shouldGetNull() {
         when(this.entityManager.find(ArgumentMatchers.any(), ArgumentMatchers.anyString()))
                 .thenReturn(null);
-        User actual = this.userService.findOne("123");
+        User actual = this.userService.find("123");
         assertNull(actual);
     }
 }

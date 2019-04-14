@@ -1,4 +1,4 @@
-package server.model;
+package com.semonsys.server.model;
 
 import lombok.Data;
 
