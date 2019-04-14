@@ -30,10 +30,10 @@ public class TokensServiceTest {
     @Test
     public void clearRefreshTokens() {
         User expected = new User("123", "345", null,
-                new ArrayList<>(Collections.singletonList(("my-test-token"))), true, null);
+            new ArrayList<>(Collections.singletonList(("my-test-token"))), true, null);
 
         when(this.userService.find(ArgumentMatchers.anyString()))
-                .thenReturn(expected);
+            .thenReturn(expected);
         doNothing().when(this.userService).update(ArgumentMatchers.any());
         this.tokensService.clearRefreshTokens(expected.getLogin());
         assertEquals(Collections.emptyList(), expected.getRefreshTokens());
@@ -43,14 +43,14 @@ public class TokensServiceTest {
     @Test
     public void generateTokens() {
         User expected = new User("123", "345", null,
-                new ArrayList<>(Collections.singletonList(("my-test-token"))), true, null);
+            new ArrayList<>(Collections.singletonList(("my-test-token"))), true, null);
         doNothing().when(this.userService).update(ArgumentMatchers.any());
 
         when(this.jwtManager.createAccessToken(ArgumentMatchers.anyString(), ArgumentMatchers.any()))
-                .thenReturn("access-token");
+            .thenReturn("access-token");
 
         when(this.jwtManager.createRefreshToken(ArgumentMatchers.anyString()))
-                .thenReturn("refresh-token");
+            .thenReturn("refresh-token");
         Response response = this.tokensService.generateTokens(expected);
         assertEquals(response.getStatus(), Response.Status.OK.getStatusCode());
         verify(this.userService).update(ArgumentMatchers.any());

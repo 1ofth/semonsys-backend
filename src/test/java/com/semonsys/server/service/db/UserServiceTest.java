@@ -29,13 +29,13 @@ public class UserServiceTest {
     @Test
     public void shouldGetUserList() {
         List<User> expected = new ArrayList<>(Arrays.asList(
-                new User("test1", "test1"),
-                new User("test2", "test2")));
+            new User("test1", "test1"),
+            new User("test2", "test2")));
 
         TypedQuery<User> mockedQuery = mock(TypedQuery.class);
         when(mockedQuery.getResultList()).thenReturn(expected);
         when(this.entityManager.createQuery(anyString(), any(Class.class)))
-                .thenReturn(mockedQuery);
+            .thenReturn(mockedQuery);
 
         List<User> actual = this.userService.getAll();
 
@@ -45,7 +45,7 @@ public class UserServiceTest {
     @Test
     public void shouldGetUserByToken() {
         User expected = new User("test1", "test1",
-                null, null, true, "1a2b3c");
+            null, null, true, "1a2b3c");
 
         TypedQuery<User> mockedQuery = mock(TypedQuery.class);
 
@@ -53,7 +53,7 @@ public class UserServiceTest {
         when(mockedQuery.getSingleResult()).thenReturn(expected);
 
         when(this.entityManager.createQuery(anyString(), any(Class.class)))
-                .thenReturn(mockedQuery);
+            .thenReturn(mockedQuery);
 
         User actual = this.userService.findUserByToken("1a2b3c");
 
@@ -72,7 +72,7 @@ public class UserServiceTest {
     public void shouldGetUserByLogin() {
         User expected = new User("123", "345");
         when(this.entityManager.find(ArgumentMatchers.any(), ArgumentMatchers.anyString()))
-                .thenReturn(expected);
+            .thenReturn(expected);
         User actual = this.userService.find("123");
         assertEquals(expected, actual);
     }
@@ -80,7 +80,7 @@ public class UserServiceTest {
     @Test
     public void shouldGetNull() {
         when(this.entityManager.find(ArgumentMatchers.any(), ArgumentMatchers.anyString()))
-                .thenReturn(null);
+            .thenReturn(null);
         User actual = this.userService.find("123");
         assertNull(actual);
     }

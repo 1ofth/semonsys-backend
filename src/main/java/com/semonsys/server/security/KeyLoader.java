@@ -10,7 +10,10 @@ import java.security.KeyStoreException;
 import java.security.PrivateKey;
 
 @Log
-class  KeyLoader {
+final class KeyLoader {
+    private KeyLoader() {
+    }
+
     static PrivateKey load() {
         char[] password = "secret".toCharArray();
         String alias = "alias";
@@ -30,6 +33,8 @@ class  KeyLoader {
             if (key instanceof PrivateKey) {
                 pk = (PrivateKey) key;
             }
+        } catch (RuntimeException e) {
+            throw e;
         } catch (Exception e) {
             log.warning(e.getMessage());
         }

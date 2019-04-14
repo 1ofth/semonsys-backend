@@ -30,7 +30,7 @@ public class RegistrationServiceTest {
     public void sendConfirmationMessage() {
 
         User expected = new User("123", "345", "mailTo@gmail.com",
-                new ArrayList<>(Collections.singletonList(("my-test-token"))), false, null);
+            new ArrayList<>(Collections.singletonList(("my-test-token"))), false, null);
         this.registrationService.sendConfirmationMessage(expected, "test");
 
         verify(this.tokensService).generateVerificationToken(expected);

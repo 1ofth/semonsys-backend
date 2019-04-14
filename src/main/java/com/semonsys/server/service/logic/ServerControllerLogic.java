@@ -1,10 +1,10 @@
-package server.service.logic;
+package com.semonsys.server.service.logic;
 
+import com.semonsys.server.model.Server;
+import com.semonsys.server.model.User;
+import com.semonsys.server.service.db.ServerService;
+import com.semonsys.server.service.db.UserService;
 import lombok.extern.java.Log;
-import server.model.Server;
-import server.model.User;
-import server.service.db.ServerService;
-import server.service.db.UserService;
 
 import javax.ejb.Stateless;
 import javax.json.Json;
@@ -39,8 +39,8 @@ public class ServerControllerLogic {
             JsonArray jsonArray = convertListToJson(list);
             return Response.ok(jsonArray).build();
         } else {
-          return Response.status(Response.Status.BAD_REQUEST)
-              .entity("User " + userName + " doesn't have any servers").build();
+            return Response.status(Response.Status.BAD_REQUEST)
+                .entity("User " + userName + " doesn't have any servers").build();
         }
     }
 
@@ -48,7 +48,7 @@ public class ServerControllerLogic {
     public Response addServer(final String userName, final String serverName,
                               final String description, final String ip,
                               final UserService userService, final ServerService serverService) {
-        User user = userService.findOne(userName);
+        User user = userService.find(userName);
 
         if (user == null) {
             return Response.status(Response.Status.BAD_REQUEST)

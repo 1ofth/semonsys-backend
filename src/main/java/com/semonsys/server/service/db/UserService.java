@@ -16,11 +16,11 @@ public class UserService {
     @PersistenceContext(unitName = "provider")
     private EntityManager entityManager;
 
-    public void save(User user) {
+    public void save(final User user) {
         entityManager.persist(user);
     }
 
-    public void update(User user) {
+    public void update(final User user) {
         entityManager.merge(user);
     }
 
@@ -28,15 +28,15 @@ public class UserService {
         return entityManager.createQuery("select u from User u", User.class).getResultList();
     }
 
-    public User find(String login) {
+    public User find(final String login) {
         return entityManager.find(User.class, login);
     }
 
-    public User findUserByToken(String token) {
+    public User findUserByToken(final String token) {
         try {
             return entityManager.createQuery("select u from User u where u.verificationToken = :token", User.class)
-                    .setParameter("token", token)
-                    .getSingleResult();
+                .setParameter("token", token)
+                .getSingleResult();
         } catch (NoResultException n) {
             return null;
         }

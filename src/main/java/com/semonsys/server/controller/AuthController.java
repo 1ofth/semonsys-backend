@@ -1,10 +1,10 @@
-package server.controller;
+package com.semonsys.server.controller;
 
+import com.semonsys.server.model.User;
+import com.semonsys.server.security.JwtManager;
+import com.semonsys.server.service.db.UserService;
+import com.semonsys.server.service.logic.TokensService;
 import lombok.extern.java.Log;
-import server.model.User;
-import server.security.JwtManager;
-import server.service.db.UserService;
-import server.service.logic.TokensService;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -38,17 +38,17 @@ public class AuthController {
     private TokensService tokensService;
 
     @POST
-    @Path("/secured/auth/logout")
+    @Path("/secured/logout")
     public Response logout() {
         tokensService.clearRefreshTokens(securityContext.getUserPrincipal().getName());
         return Response.ok("{message: 'logged out'}").build();
     }
 
     @POST
-    @Path("/secured/auth/refresh-tokens")
+    @Path("/secured/refresh-tokens")
     public Response refresh(@FormParam("refreshToken") final String refreshToken,
                             @Context final HttpServletResponse response) {
-        User user = userService.findOne(securityContext.getUserPrincipal().getName());
+        User user = userService.find(securityContext.getUserPrincipal().getName());
         if (user.getRefreshTokens().remove(refreshToken)) {
             try {
                 if (((Date) jwtManager.getClaims(refreshToken).get("exp")).after(new Date())) {
@@ -63,13 +63,13 @@ public class AuthController {
     }
 
     @POST
-    @Path("/auth/login")
+    @Path("/login")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response login(@FormParam("login") final String login,
                           @FormParam("password") final String password,
                           @Context final HttpServletResponse response) {
         log.info("Authenticating " + login);
-        User user = userService.findOne(login);
+        User user = userService.find(login);
         if (user != null && user.getPassword().equals(password)) {
             return tokensService.generateTokens(user);
         }
