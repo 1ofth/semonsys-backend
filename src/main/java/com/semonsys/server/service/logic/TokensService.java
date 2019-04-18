@@ -15,9 +15,6 @@ import java.util.UUID;
 
 @Stateless
 public class TokensService {
-    private static final int SECONDS_IN_FIVE_HOURS = 5 * 60 * 60;
-    private static final int MILLISECONDS_IN_SECOND = 1000;
-
     @Setter
     @Inject
     private JwtManager jwtManager;
@@ -49,8 +46,7 @@ public class TokensService {
         JsonObject result = Json.createObjectBuilder()
             .add("accessToken", token)
             .add("refreshToken", refreshToken)
-            .add("expires_in", System.currentTimeMillis() / MILLISECONDS_IN_SECOND
-                + SECONDS_IN_FIVE_HOURS)
+            .add("expires_in", System.currentTimeMillis() / JwtManager.MILLISECONDS_IN_SECOND + JwtManager.SECONDS_IN_FIVE_HOURS)
             .build();
         return Response.ok(result).header("Authorization", "Bearer " + token).build();
     }

@@ -34,7 +34,6 @@ public class User {
     private List<String> refreshTokens;
 
     private Boolean verified;
-
     private String verificationToken;
 
     public User(final String login, final String password) {

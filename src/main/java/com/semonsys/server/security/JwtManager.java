@@ -26,20 +26,19 @@ import java.util.UUID;
 @Stateless
 @Log
 public class JwtManager {
+    public static final int SECONDS_PER_TEN_DAYS = 3600 * 24 * 10;
+    public static final int SECONDS_IN_FIVE_HOURS = 5 * 60 * 60;
+    public static final int MILLISECONDS_IN_SECOND = 1000;
+    private static final String CLAIM_ROLES = "groups";
+    private static final String ISSUER = "quickstart-jwt-issuer";
+    private static final String AUDIENCE = "jwt-audience";
+    private static final String REFRESH_TOKEN = "ROLE_REFRESH_TOKEN";
+    private PrivateKey privateKey;
 
     @PostConstruct
     public void init() {
         privateKey = KeyLoader.load();
     }
-
-    private PrivateKey privateKey;
-    private static final String CLAIM_ROLES = "groups";
-    private static final String ISSUER = "quickstart-jwt-issuer";
-    private static final String AUDIENCE = "jwt-audience";
-    private static final String REFRESH_TOKEN = "ROLE_REFRESH_TOKEN";
-    private static final int SECONDS_PER_TEN_DAYS = 3600 * 24 * 10;
-    private static final int SECONDS_IN_FIVE_HOURS = 5 * 60 * 60;
-    private static final int MILLISECONDS_IN_SECOND = 1000;
 
     public Map<String, Object> getClaims(final String token) throws ParseException {
         JWT j = JWTParser.parse(token);

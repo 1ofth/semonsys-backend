@@ -23,7 +23,6 @@ public class ServerControllerLogic {
     public Response getServers(final String userName,
                                final Long id, final ServerService serverService) {
         List<Server> list = new ArrayList<>();
-
         if (id != null) {
             Server server = serverService.find(id);
             if (server.getUser().getLogin().equals(userName)) {
@@ -49,7 +48,6 @@ public class ServerControllerLogic {
                               final String description, final String ip,
                               final UserService userService, final ServerService serverService) {
         User user = userService.find(userName);
-
         if (user == null) {
             return Response.status(Response.Status.BAD_REQUEST)
                 .entity("User with name " + userName + " was not found").build();

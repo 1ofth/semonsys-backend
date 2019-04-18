@@ -28,6 +28,10 @@ public class UserService {
         return entityManager.createQuery("select u from User u", User.class).getResultList();
     }
 
+    public User findOne(final String login) {
+        return entityManager.find(User.class, login);
+    }
+
     public User find(final String login) {
         return entityManager.find(User.class, login);
     }

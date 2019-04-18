@@ -1,6 +1,7 @@
-package com.semonsys.server.service.db;
+package com.semonsys.server.service;
 
 import com.semonsys.server.model.User;
+import com.semonsys.server.service.db.UserService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentMatchers;
@@ -9,6 +10,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -62,7 +64,7 @@ public class UserServiceTest {
 
     @Test
     public void shouldSave() {
-        User user = new User("test", "test");
+        User user = new User("test", "test", null, Collections.emptyList(), true, "");
         doNothing().when(this.entityManager).persist(user);
         this.userService.save(user);
         verify(this.entityManager).persist(user);
@@ -70,7 +72,7 @@ public class UserServiceTest {
 
     @Test
     public void shouldGetUserByLogin() {
-        User expected = new User("123", "345");
+        User expected = new User("123", "345", null, Collections.emptyList(), true, "");
         when(this.entityManager.find(ArgumentMatchers.any(), ArgumentMatchers.anyString()))
             .thenReturn(expected);
         User actual = this.userService.find("123");

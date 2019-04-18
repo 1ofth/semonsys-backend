@@ -1,9 +1,9 @@
 package com.semonsys.server.controller;
 
-import com.semonsys.server.service.logic.RegistrationService;
-import lombok.extern.java.Log;
 import com.semonsys.server.model.User;
 import com.semonsys.server.service.db.UserService;
+import com.semonsys.server.service.logic.RegistrationService;
+import lombok.extern.java.Log;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;

@@ -5,5 +5,9 @@ import java.rmi.RemoteException;
 import java.util.List;
 
 public interface RemoteCommands extends Remote {
-    List<TopData> getTopData() throws RemoteException;
+    String testConnection() throws RemoteException;
+
+    List<CompositeData> getData(Long timeFrom) throws RemoteException;
+
+    void removeData(Long time) throws RemoteException;
 }
