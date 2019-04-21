@@ -1,7 +1,7 @@
 package com.semonsys.server.service.logic;
 
-import com.semonsys.server.model.Role;
-import com.semonsys.server.model.User;
+import com.semonsys.server.model.dao.Role;
+import com.semonsys.server.model.dao.User;
 import com.semonsys.server.security.JwtManager;
 import com.semonsys.server.service.db.UserService;
 import lombok.Setter;

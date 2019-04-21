@@ -1,6 +1,7 @@
 package com.semonsys.server.controller;
 
-import com.semonsys.server.model.User;
+import com.semonsys.server.interceptor.MethodParamsInterceptor;
+import com.semonsys.server.model.dao.User;
 import com.semonsys.server.security.JwtManager;
 import com.semonsys.server.service.db.UserService;
 import com.semonsys.server.service.logic.TokensService;
@@ -8,6 +9,7 @@ import lombok.extern.java.Log;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -21,7 +23,7 @@ import java.text.ParseException;
 import java.util.Date;
 
 @Stateless
-@Path("/rest")
+@Path(PathHolder.AUTH_PATH)
 @Log
 public class AuthController {
 
@@ -38,14 +40,14 @@ public class AuthController {
     private TokensService tokensService;
 
     @POST
-    @Path("/secured/logout")
+    @Path(PathHolder.LOGOUT_PATH)
     public Response logout() {
         tokensService.clearRefreshTokens(securityContext.getUserPrincipal().getName());
         return Response.ok("{message: 'logged out'}").build();
     }
 
     @POST
-    @Path("/secured/refresh-tokens")
+    @Path(PathHolder.REFRESH_TOKENS_PATH)
     public Response refresh(@FormParam("refreshToken") final String refreshToken,
                             @Context final HttpServletResponse response) {
         User user = userService.find(securityContext.getUserPrincipal().getName());
@@ -62,8 +64,9 @@ public class AuthController {
         return Response.status(Response.Status.BAD_REQUEST).build();
     }
 
+    @Interceptors(MethodParamsInterceptor.class)
     @POST
-    @Path("/login")
+    @Path(PathHolder.LOGIN_PATH)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response login(@FormParam("login") final String login,
                           @FormParam("password") final String password,

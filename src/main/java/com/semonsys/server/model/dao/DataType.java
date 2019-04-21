@@ -1,4 +1,4 @@
-package com.semonsys.server.model;
+package com.semonsys.server.model.dao;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,4 +27,12 @@ public class DataType {
     private String userLogin;
     private String name;
     private String description;
+    private Boolean monitoring;
+
+    public DataType(final long id, final String userLogin, final String name, final String description) {
+        this.id = id;
+        this.userLogin = userLogin;
+        this.name = name;
+        this.description = description;
+    }
 }

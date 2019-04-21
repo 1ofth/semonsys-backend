@@ -1,81 +1,102 @@
 package com.semonsys.server.controller;
 
 import com.google.gson.Gson;
-import com.semonsys.server.service.db.storedData.SingleDataService;
-import com.semonsys.shared.SingleData;
+import com.semonsys.server.interceptor.MethodParamsInterceptor;
+import com.semonsys.server.model.dao.Server;
+import com.semonsys.server.model.dto.ParamTO;
+import com.semonsys.server.model.dto.SingleDataTO;
+import com.semonsys.server.service.db.ServerService;
+import com.semonsys.server.service.db.SingleDataService;
+import com.semonsys.server.service.logic.agent.AgentDataGetter;
+import lombok.extern.log4j.Log4j;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
-import java.sql.Timestamp;
-import java.util.List;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.util.Set;
 
+@Log4j
 @Stateless
-@Path("/rest/secured/data/single")
+@Path(PathHolder.SINGLE_DATA_PATH)
 public class SingleDataController {
-
-    @Context
-    private SecurityContext securityContext;
 
     @EJB
     private SingleDataService singleDataService;
 
+    @EJB
+    private ServerService serverService;
+
+    @EJB
+    private AgentDataGetter agentDataGetter;
+
+
+    @Context
+    private SecurityContext securityContext;
+
+
     @GET
-    @Path("/all")
-    public Response getLastAll(@QueryParam("server_id") final Long serverId) {
-        if (serverId == null) {
+    @Path(PathHolder.SINGLE_DATA_LAST_PATH)
+    @Interceptors(MethodParamsInterceptor.class)
+    public Response getLastAll(@QueryParam("group") final String groupName,
+                               @QueryParam("server") final String serverName) {
+        if (groupName == null || serverName == null) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
-        List<SingleData> list = singleDataService.findLastAll(serverId, securityContext.getUserPrincipal().getName());
+        Server server = serverService.find(securityContext.getUserPrincipal().getName(), serverName);
 
-        if (list == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        } else {
-            return Response.ok(new Gson().toJson(list)).build();
+        if (server == null || !server.getActivated()) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
         }
+
+        try {
+            agentDataGetter.updateData(server);
+        } catch (RemoteException | NotBoundException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+
+        Set<SingleDataTO> result = singleDataService.findLastSingleDataPack(groupName, server.getId());
+
+        return Response.ok(new Gson().toJson(result)).build();
     }
 
     @GET
-    @Path("/one")
-    public Response getLastOne(@QueryParam("data_type") final String dataType,
-                               @QueryParam("server_id") final Long serverId) {
-        if (dataType == null || serverId == null) {
+    @Path(PathHolder.SINGLE_DATA_SERIES_PATH)
+    @Interceptors(MethodParamsInterceptor.class)
+    public Response getSeries(@QueryParam("server") final String serverName,
+                              @QueryParam("group") final String dataGroupName,
+                              @QueryParam("type") final String dataTypeName,
+                              @QueryParam("time") final Long time) {
+
+        if (serverName == null || dataGroupName == null || dataTypeName == null || time == null) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
-        SingleData singleData = singleDataService.findLastOne(dataType, serverId);
+        Server server = serverService.find(securityContext.getUserPrincipal().getName(), serverName);
 
-        if (singleData == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        } else {
-            return Response.ok(new Gson().toJson(singleData)).build();
-        }
-    }
-
-    @GET
-    @Path("/after")
-    public Response getOneAfter(@QueryParam("data_type") final String dataType,
-                                @QueryParam("server_id") final Long serverId,
-                                @QueryParam("time") final Long time) {
-        if (time == null || dataType == null || serverId == null) {
+        if (server == null || !server.getActivated()) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
-        Timestamp timestamp = new Timestamp(time);
+        log.info("Data getting for agent '" + serverName + "' is being processing.");
 
-        List<SingleData> singleData = singleDataService.findOneAfter(dataType, serverId, timestamp);
-
-        if (singleData == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        } else {
-            return Response.ok(new Gson().toJson(singleData)).build();
+        try {
+            agentDataGetter.updateData(server);
+        } catch (RemoteException | NotBoundException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
+
+        Set<ParamTO> result = singleDataService.findAllParamsFromTime(dataGroupName, dataTypeName, server.getId(), time);
+
+        return Response.ok(new Gson().toJson(result)).build();
     }
 
 

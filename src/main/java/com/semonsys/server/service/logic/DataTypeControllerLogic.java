@@ -1,6 +1,6 @@
 package com.semonsys.server.service.logic;
 
-import com.semonsys.server.model.DataType;
+import com.semonsys.server.model.dao.DataType;
 import com.semonsys.server.service.db.DataTypeService;
 import lombok.Setter;
 import lombok.extern.java.Log;

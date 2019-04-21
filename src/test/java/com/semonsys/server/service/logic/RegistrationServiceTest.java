@@ -1,6 +1,6 @@
 package com.semonsys.server.service.logic;
 
-import com.semonsys.server.model.User;
+import com.semonsys.server.model.dao.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentMatchers;

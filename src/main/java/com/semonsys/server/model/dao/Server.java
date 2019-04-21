@@ -1,4 +1,4 @@
-package com.semonsys.server.model;
+package com.semonsys.server.model.dao;
 
 import lombok.Data;
 
@@ -17,36 +17,29 @@ import javax.persistence.Table;
 @Table(name = "server")
 @Data
 public class Server {
-    private static final int PORT_DEFAULT = 12122;
+    private static final int DEFAULT_PORT = 10_000;
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "server_id_seq")
     @SequenceGenerator(name = "server_id_seq", sequenceName = "server_id_seq", allocationSize = 1)
     private Long id;
-    @ManyToOne(fetch = FetchType.EAGER)
+
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_login")
     private User user;
-    private String name;
-    private String description;
-    private String ip;
-    // default values
-    private Integer port;
-    private Boolean activated;
+
+
+    private String name = "";
+    private String description = "";
+    private String ip = "";
+    private Integer port = DEFAULT_PORT;
+
+
+    private Boolean activated = false;
     @Column(name = "act_data")
-    private String actData;
+    private String activationData = "";
 
     public Server() {
-    }
-
-    public Server(final User user, final String name,
-                  final String description, final String ip) {
-        this.user = user;
-        this.name = name;
-        this.description = description;
-        this.ip = ip;
-
-        // default values
-        this.port = PORT_DEFAULT;
-        this.activated = false;
-        this.actData = "";
     }
 }

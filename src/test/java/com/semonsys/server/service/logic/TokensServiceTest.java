@@ -1,6 +1,6 @@
 package com.semonsys.server.service.logic;
 
-import com.semonsys.server.model.User;
+import com.semonsys.server.model.dao.User;
 import com.semonsys.server.security.JwtManager;
 import com.semonsys.server.service.db.UserService;
 import org.junit.Before;
