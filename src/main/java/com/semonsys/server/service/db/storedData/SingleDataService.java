@@ -4,7 +4,7 @@ import com.semonsys.server.model.DataGroup;
 import com.semonsys.server.service.db.DataGroupService;
 import com.semonsys.server.service.db.DataTypeService;
 import com.semonsys.shared.DataType;
-import com.semonsys.shared.SingleData;
+import com.semonsys.server.model.SingleData;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -15,6 +15,7 @@ import javax.transaction.Transactional;
 import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Stateless
@@ -39,10 +40,10 @@ public class SingleDataService {
      *
      * @param dataTypeName a name of type of stored data
      * @param serverId     id of a com.semonsys.com.semonsys.server data belongs to
-     * @param timestamp    a time to use as a lowest time of returning pack of data
+     * @param time    a time to use as a lowest time of returning pack of data
      * @return a list of SingleData objects
      */
-    public List<SingleData> findOneAfter(final String dataTypeName, final long serverId, final Timestamp timestamp) {
+    public List<SingleData> findAfter(final String dataTypeName, final long serverId, final Long time) {
         List<Object[]> objects;
 
         try {
@@ -68,12 +69,12 @@ public class SingleDataService {
                     + "WHERE \n"
                     + "    data.server_id = :serverId\n"
                     + "    AND data_type.name = :dataType\n"
-                    + "    AND :time \\:\\:timestamp <= data.time\\:\\:timestamp \n "
+                    + "    AND :time <= data.time \n "
                     + "    AND data.id NOT IN (SELECT data_id FROM composite_data) ;"
             )
                 .setParameter("serverId", serverId)
                 .setParameter("dataType", dataTypeName)
-                .setParameter("time", timestamp)
+                .setParameter("time", time)
                 .getResultList();
         } catch (NoResultException e) {
             return null;
@@ -86,6 +87,8 @@ public class SingleDataService {
 
             list.add(singleData);
         }
+
+        Collections.reverse(list);
 
         return list;
     }
@@ -112,6 +115,8 @@ public class SingleDataService {
                 list.add(singleData);
             }
         }
+
+        Collections.reverse(list);
 
         return list;
     }
@@ -160,7 +165,7 @@ public class SingleDataService {
 
         singleData.setDataTypeName(dataTypeName);
         singleData.setGroupName((String) object[GROUP_NAME_COLUMN_NUMBER]);
-        singleData.setTime((Timestamp) object[TIME_COLUMN_NUMBER]);
+        singleData.setTime( ((BigInteger) object[TIME_COLUMN_NUMBER]).longValue() );
 
         if (object[DOUBLE_VALUE_COLUMN_NUMBER] != null) {
             singleData.setValue((Long) object[DOUBLE_VALUE_COLUMN_NUMBER]);
@@ -174,7 +179,6 @@ public class SingleDataService {
     }
 
 
-    @Transactional
     public BigInteger save(final SingleData data, final Long serverId) {
         if (data.getType() == DataType.NONE || data.getType() == DataType.LIST) {
             return null;
@@ -203,27 +207,33 @@ public class SingleDataService {
             .setParameter("time", data.getTime())
             .executeUpdate();
 
-        return (BigInteger) entityManager.createNativeQuery("SELECT last_value FROM data_id_seq;").getSingleResult();
+        try {
+            return (BigInteger) entityManager.createNativeQuery("SELECT last_value FROM data_id_seq;").getSingleResult();
+        } catch (NoResultException ignore){ return null; }
+
     }
 
+    public void save(final List<SingleData> list, final long serverId){
+        for(SingleData data : list){
+            save(data, serverId);
+        }
+    }
+
+
     public Long getMaxTime() {
-        Timestamp result;
+        Long result;
         try {
-            result = (Timestamp) entityManager.createNativeQuery(
+            result = ((BigInteger) entityManager.createNativeQuery(
                 "SELECT "
                     + "   MAX(data.time) "
                     + "FROM data "
                     + "WHERE "
-                    + "   data.id NOT IN (SELECT data_id FROM composite_data);").getSingleResult();
+                    + "   data.id NOT IN (SELECT data_id FROM composite_data);").getSingleResult()).longValue();
         } catch (NoResultException e) {
             return null;
         }
 
-        if (result == null) {
-            return 0L;
-        } else {
-            return result.getTime();
-        }
+        return result;
     }
 
     private BigInteger insertIntoParam(final SingleData data) {
@@ -258,12 +268,14 @@ public class SingleDataService {
 
         singleData.setDataTypeName((String) object[0]);
         singleData.setGroupName((String) object[GROUP_NAME_COLUMN_NUMBER]);
-        singleData.setTime((Timestamp) object[TIME_COLUMN_NUMBER]);
+        singleData.setTime( ((BigInteger) object[TIME_COLUMN_NUMBER]).longValue() );
 
         if (object[LONG_VALUE_COLUMN_NUMBER] != null) {
-            singleData.setValue(((Number) object[LONG_VALUE_COLUMN_NUMBER]).longValue());
+            singleData.setValue(((Long) object[LONG_VALUE_COLUMN_NUMBER]));
+
         } else if (object[DOUBLE_VALUE_COLUMN_NUMBER] != null) {
             singleData.setValue((Double) object[DOUBLE_VALUE_COLUMN_NUMBER]);
+
         } else if (object[STRING_VALUE_COLUMN_NUMBER] != null) {
             singleData.setValue((String) object[STRING_VALUE_COLUMN_NUMBER]);
         }

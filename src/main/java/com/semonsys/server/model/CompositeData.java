@@ -1,4 +1,4 @@
-package com.semonsys.shared;
+package com.semonsys.server.model;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

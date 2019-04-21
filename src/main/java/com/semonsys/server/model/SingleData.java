@@ -1,5 +1,6 @@
-package com.semonsys.shared;
+package com.semonsys.server.model;
 
+import com.semonsys.shared.DataType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,15 +13,8 @@ import java.util.Objects;
 public class SingleData implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private Timestamp time = new Timestamp(0);
-
-    public Timestamp getTime() {
-        return new Timestamp(time.getTime());
-    }
-
-    public void setTime(final Timestamp timestamp) {
-        this.time = new Timestamp(timestamp.getTime());
-    }
+    @Getter @Setter
+    private Long time;
 
     @Setter @Getter
     private String dataTypeName;
@@ -32,21 +26,21 @@ public class SingleData implements Serializable {
     @Getter
     private Object value;
     @Getter
-    private DataType type = DataType.NONE;
+    private com.semonsys.shared.DataType type = com.semonsys.shared.DataType.NONE;
 
 
     public void setValue(final String value) {
-        type = DataType.STRING;
+        type = com.semonsys.shared.DataType.STRING;
         this.value = value;
     }
 
     public void setValue(final Long value) {
-        type = DataType.LONG;
+        type = com.semonsys.shared.DataType.LONG;
         this.value = value;
     }
 
     public void setValue(final Double value) {
-        type = DataType.DOUBLE;
+        type = com.semonsys.shared.DataType.DOUBLE;
         this.value = value;
     }
 

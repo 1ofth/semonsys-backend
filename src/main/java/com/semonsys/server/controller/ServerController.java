@@ -21,7 +21,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 
 @Stateless
-@Path("/rest/secured/")
+@Path("/rest/secured/server")
 public class ServerController {
 
     @Context

@@ -4,9 +4,11 @@ import com.semonsys.server.model.Server;
 import com.semonsys.server.service.db.ServerService;
 import com.semonsys.server.service.db.storedData.CompositeDataService;
 import com.semonsys.server.service.db.storedData.SingleDataService;
-import com.semonsys.shared.CompositeData;
+import com.semonsys.server.model.CompositeData;
+import com.semonsys.shared.AgentSingleData;
+import com.semonsys.shared.DataType;
 import com.semonsys.shared.RemoteCommands;
-import com.semonsys.shared.SingleData;
+import com.semonsys.server.model.SingleData;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -15,6 +17,8 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 @Stateless
@@ -42,11 +46,11 @@ public class AgentDataGetter {
         return stub.testConnection();
     }
 
-    public List<CompositeData> getData(final long serverId) throws RemoteException, NotBoundException {
+    public void updateData(final long serverId) throws RemoteException, NotBoundException {
         Server server = serverService.find(serverId);
 
         if (server == null) {
-            return null;
+            return;
         }
 
         long time1 = singleDataService.getMaxTime();
@@ -56,33 +60,59 @@ public class AgentDataGetter {
             time1 = time2;
         }
 
-        return getData(server, time1);
+        updateData(server, time1);
+
+
     }
 
-    public List<CompositeData> getData(final Server server, final long timeFrom) throws RemoteException, NotBoundException {
+    private void updateData(final Server server, final long timeFrom) throws RemoteException, NotBoundException {
         Registry registry = LocateRegistry.getRegistry(server.getIp(), server.getPort());
         RemoteCommands stub = (RemoteCommands) registry.lookup("RemoteCommands");
 
-        List<CompositeData> list = stub.getData(timeFrom);
+        List<AgentSingleData> dataFromAgent = stub.getData(timeFrom);
 
-        Long time = list.get(list.size() - 1).getData().get(0).getTime().getTime();
+        // there may be some data which would be stored as composite data (field "compositeDataIdentifier")
+        List<AgentSingleData> singleData = new ArrayList<>();
+        List<AgentSingleData> compositeData = new ArrayList<>();
 
-        stub.removeData(time);
-
-        for (CompositeData compositeData : list) {
-            if (compositeData.getName().equals("SingleData")) {
-                List<SingleData> singleData = compositeData.getData();
-
-                for (SingleData singleData1 : singleData) {
-                    singleDataService.save(singleData1, server.getId());
-                }
-
+        for(AgentSingleData data : dataFromAgent){
+            if(data.getCompositeDataIdentifier() != null){
+                compositeData.add(data);
             } else {
-                compositeDataService.save(compositeData, server.getId());
+                singleData.add(data);
             }
         }
 
-        return list;
+        dataFromAgent = null;
+
+        List<SingleData> transformedSingleData = transformToSingleData(singleData);
+
+        singleDataService.save(transformedSingleData, server.getId());
+        long maxTime = transformedSingleData.get(transformedSingleData.size()-1).getTime();
+
+        stub.removeData(maxTime);
     }
 
+    private List<SingleData> transformToSingleData(final List<AgentSingleData> dataList){
+        List<SingleData> resultList = new ArrayList<>();
+
+        for(AgentSingleData data : dataList){
+            SingleData singleData = new SingleData();
+
+            singleData.setDataTypeName(data.getDataTypeName());
+            singleData.setGroupName(data.getGroupName());
+            singleData.setTime(data.getTime());
+            if(data.getType() == DataType.LONG) {
+                singleData.setValue((Long)data.getValue());
+            } else if(data.getType() == DataType.DOUBLE) {
+                singleData.setValue((Double) data.getValue());
+            } else if(data.getType() == DataType.STRING) {
+                singleData.setValue((String) data.getValue());
+            }
+
+            resultList.add(singleData);
+        }
+
+        return resultList;
+    }
 }

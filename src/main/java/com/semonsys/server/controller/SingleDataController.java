@@ -2,7 +2,7 @@ package com.semonsys.server.controller;
 
 import com.google.gson.Gson;
 import com.semonsys.server.service.db.storedData.SingleDataService;
-import com.semonsys.shared.SingleData;
+import com.semonsys.server.model.SingleData;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -67,9 +67,7 @@ public class SingleDataController {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
-        Timestamp timestamp = new Timestamp(time);
-
-        List<SingleData> singleData = singleDataService.findOneAfter(dataType, serverId, timestamp);
+        List<SingleData> singleData = singleDataService.findAfter(dataType, serverId, time);
 
         if (singleData == null) {
             return Response.status(Response.Status.NOT_FOUND).build();

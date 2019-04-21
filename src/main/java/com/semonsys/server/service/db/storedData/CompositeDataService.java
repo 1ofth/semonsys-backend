@@ -1,8 +1,8 @@
 package com.semonsys.server.service.db.storedData;
 
-import com.semonsys.shared.CompositeData;
+import com.semonsys.server.model.CompositeData;
 import com.semonsys.shared.DataType;
-import com.semonsys.shared.SingleData;
+import com.semonsys.server.model.SingleData;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -79,15 +79,15 @@ public class CompositeDataService {
 
         List<CompositeData> list = new ArrayList<>();
 
-        Timestamp lastTime = new Timestamp(0);
+        Long lastTime = 0L;
         CompositeData temp = null;
 
         for (Object[] object : objects) {
             List<SingleData> innerDataList = new ArrayList<>();
             SingleData singleData = convertObjectToData(object);
 
-            if (Objects.requireNonNull(singleData).getTime().getTime() - lastTime.getTime() > TIME_DIFFERENCE_MILLISECONDS
-                || singleData.getTime().getTime() == 0) {
+            if (Objects.requireNonNull(singleData).getTime() - lastTime > TIME_DIFFERENCE_MILLISECONDS
+                || singleData.getTime() == 0) {
 
                 if (temp != null) {
                     list.add(temp);
@@ -295,7 +295,7 @@ public class CompositeDataService {
 
         singleData.setDataTypeName((String) object[0]);
         singleData.setGroupName((String) object[GROUP_NAME_COLUMN_NUMBER]);
-        singleData.setTime((Timestamp) object[TIME_COLUMN_NUMBER]);
+        singleData.setTime((Long) object[TIME_COLUMN_NUMBER]);
 
         if (object[LONG_VALUE_COLUMN_NUMBER] != null) {
             singleData.setValue(((Number) object[LONG_VALUE_COLUMN_NUMBER]).longValue());

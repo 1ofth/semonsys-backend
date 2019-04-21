@@ -2,7 +2,7 @@ package com.semonsys.server.controller;
 
 import com.google.gson.Gson;
 import com.semonsys.server.service.db.storedData.CompositeDataService;
-import com.semonsys.shared.CompositeData;
+import com.semonsys.server.model.CompositeData;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;

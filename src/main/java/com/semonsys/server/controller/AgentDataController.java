@@ -12,7 +12,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 
 
-@Path("/rest/secured/data")
+@Path("/rest/secured/agent")
 public class AgentDataController {
 
     @EJB
@@ -34,12 +34,10 @@ public class AgentDataController {
                 return Response.ok(string).build();
             }
 
-        } catch (RemoteException e) {
+        } catch (RemoteException | MalformedURLException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         } catch (NotBoundException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("NotBoundException").build();
-        } catch (MalformedURLException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
     }
 
@@ -50,9 +48,8 @@ public class AgentDataController {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
-        //List<CompositeData> list;
         try {
-            agentDataGetter.getData(serverId);
+            agentDataGetter.updateData(serverId);
         } catch (RemoteException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Problems with RMI connection\n" + e.getMessage()).build();
         } catch (NotBoundException e) {
