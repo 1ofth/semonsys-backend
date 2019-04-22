@@ -1,14 +1,14 @@
 package com.semonsys.server.service.logic.agent;
 
-import com.semonsys.server.model.Server;
+import com.semonsys.server.model.dao.CompositeDataN;
+import com.semonsys.server.model.dao.Server;
+import com.semonsys.server.model.dao.SingleDataN;
 import com.semonsys.server.service.db.ServerService;
 import com.semonsys.server.service.db.storedData.CompositeDataService;
-import com.semonsys.server.service.db.storedData.SingleDataService;
-import com.semonsys.server.model.CompositeData;
+import com.semonsys.server.service.db.storedData.SingleDataServiceN;
 import com.semonsys.shared.AgentSingleData;
 import com.semonsys.shared.DataType;
 import com.semonsys.shared.RemoteCommands;
-import com.semonsys.server.model.SingleData;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -17,15 +17,16 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Stateless
 public class AgentDataGetter {
 
     @EJB
-    private SingleDataService singleDataService;
+    private SingleDataServiceN singleDataService;
 
     @EJB
     private CompositeDataService compositeDataService;
@@ -85,34 +86,94 @@ public class AgentDataGetter {
 
         dataFromAgent = null;
 
-        List<SingleData> transformedSingleData = transformToSingleData(singleData);
+        List<SingleDataN> transformedSingleData = transformToSingleData(singleData);
 
         singleDataService.save(transformedSingleData, server.getId());
+
         long maxTime = transformedSingleData.get(transformedSingleData.size()-1).getTime();
 
         stub.removeData(maxTime);
     }
 
-    private List<SingleData> transformToSingleData(final List<AgentSingleData> dataList){
-        List<SingleData> resultList = new ArrayList<>();
+
+    private Map<String, List<AgentSingleData>> partitionAgentDataList(final List<AgentSingleData> dataList){
+
+        Map<String, List<AgentSingleData>> result = new HashMap<>();
 
         for(AgentSingleData data : dataList){
-            SingleData singleData = new SingleData();
+            if(result.containsKey(data.getCompositeDataIdentifier())){
+                //result.get()
+            }
+        }
 
-            singleData.setDataTypeName(data.getDataTypeName());
-            singleData.setGroupName(data.getGroupName());
-            singleData.setTime(data.getTime());
-            if(data.getType() == DataType.LONG) {
-                singleData.setValue((Long)data.getValue());
-            } else if(data.getType() == DataType.DOUBLE) {
-                singleData.setValue((Double) data.getValue());
-            } else if(data.getType() == DataType.STRING) {
-                singleData.setValue((String) data.getValue());
+        return null;
+    }
+
+    // this method should get a list of AgentSingleData which have equal CompositeDataIdentifier's
+    private List<CompositeDataN> transformToCompositeData(final List<AgentSingleData> dataList){
+        List<CompositeDataN> result = new ArrayList<>();
+
+        // time value of given agent single data in milliseconds. would be updated later
+        long time = 0;
+
+        List<SingleDataN> tempList = null;
+        CompositeDataN tempCompositeDataObject = null;
+
+        for(AgentSingleData data : dataList){
+
+            // if a time difference is greater than 1 second then it was probably a new composite data object
+            // => need to create new instances and save old ones
+            if(data.getTime() - time > 1000){
+                time = data.getTime();
+
+                if(tempList != null){
+                    tempCompositeDataObject.setData(tempList);
+                }
+                if(tempCompositeDataObject != null){
+                    result.add(tempCompositeDataObject);
+                }
+
+                tempCompositeDataObject = new CompositeDataN();
+                tempCompositeDataObject.setName(data.getCompositeDataIdentifier());
+
+                tempList = new ArrayList<>();
             }
 
-            resultList.add(singleData);
+            // fill single data list
+            if (tempList != null) {
+                tempList.add(transformToSingleData(data));
+            }
+        }
+
+        return result;
+    }
+
+
+    private List<SingleDataN> transformToSingleData(final List<AgentSingleData> dataList){
+        List<SingleDataN> resultList = new ArrayList<>();
+
+        for(AgentSingleData data : dataList){
+            resultList.add(transformToSingleData(data));
         }
 
         return resultList;
+    }
+
+
+    private SingleDataN transformToSingleData(final AgentSingleData data){
+        SingleDataN singleData = new SingleDataN();
+
+        singleData.setDataTypeName(data.getDataTypeName());
+        singleData.setGroupName(data.getGroupName());
+        singleData.setTime(data.getTime());
+        if(data.getType() == DataType.LONG) {
+            singleData.setValue((Long)data.getValue());
+        } else if(data.getType() == DataType.DOUBLE) {
+            singleData.setValue((Double) data.getValue());
+        } else if(data.getType() == DataType.STRING) {
+            singleData.setValue((String) data.getValue());
+        }
+
+        return singleData;
     }
 }

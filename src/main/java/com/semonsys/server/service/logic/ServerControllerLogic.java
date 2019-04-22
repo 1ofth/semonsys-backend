@@ -1,7 +1,7 @@
 package com.semonsys.server.service.logic;
 
-import com.semonsys.server.model.Server;
-import com.semonsys.server.model.User;
+import com.semonsys.server.model.dao.Server;
+import com.semonsys.server.model.dao.User;
 import com.semonsys.server.service.db.ServerService;
 import com.semonsys.server.service.db.UserService;
 import lombok.extern.java.Log;

@@ -1,8 +1,8 @@
 package com.semonsys.server.service.db.storedData;
 
-import com.semonsys.server.model.CompositeData;
+import com.semonsys.server.model.dao.CompositeDataN;
+import com.semonsys.server.model.dao.SingleDataN;
 import com.semonsys.shared.DataType;
-import com.semonsys.server.model.SingleData;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -30,19 +30,19 @@ public class CompositeDataService {
     private EntityManager entityManager;
 
     @EJB
-    private SingleDataService singleDataService;
+    private SingleDataServiceN singleDataService;
 
 
     /**
-     * Returns a list of CompositeData objects containing data of given identifier from given time to
+     * Returns a list of CompositeDataN objects containing data of given identifier from given time to
      * newest ones
      *
      * @param identifier a string which identifies this composite data object
-     * @param serverId   com.semonsys.com.semonsys.server id
+     * @param serverId   server id
      * @param time       time which would be used as lowest time of returning pack of composite data objects
-     * @return a list of CompositeData objects of given com.semonsys.com.semonsys.server with one identifier
+     * @return a list of CompositeDataN objects of given server with one identifier
      */
-    public List<CompositeData> findOneAfter(final String identifier, final long serverId, final Timestamp time) {
+    public List<CompositeDataN> findOneAfter(final String identifier, final long serverId, final Timestamp time) {
         List<Object[]> objects;
 
         try {
@@ -77,14 +77,14 @@ public class CompositeDataService {
             return null;
         }
 
-        List<CompositeData> list = new ArrayList<>();
+        List<CompositeDataN> list = new ArrayList<>();
 
         Long lastTime = 0L;
-        CompositeData temp = null;
+        CompositeDataN temp = null;
 
         for (Object[] object : objects) {
-            List<SingleData> innerDataList = new ArrayList<>();
-            SingleData singleData = convertObjectToData(object);
+            List<SingleDataN> innerDataList = new ArrayList<>();
+            SingleDataN singleData = convertObjectToData(object);
 
             if (Objects.requireNonNull(singleData).getTime() - lastTime > TIME_DIFFERENCE_MILLISECONDS
                 || singleData.getTime() == 0) {
@@ -93,7 +93,7 @@ public class CompositeDataService {
                     list.add(temp);
                 }
 
-                temp = new CompositeData();
+                temp = new CompositeDataN();
 
                 temp.setName(identifier);
                 temp.setData(new ArrayList<>());
@@ -112,13 +112,13 @@ public class CompositeDataService {
 
 
     /**
-     * Returns a last one CompositeData object of given com.semonsys.com.semonsys.server with given identifier
+     * Returns a last one CompositeDataN object of given server with given identifier
      *
      * @param identifier a string which identifies this composite data object
-     * @param serverId   com.semonsys.com.semonsys.server id
-     * @return last one CompositeData object
+     * @param serverId   server id
+     * @return last one CompositeDataN object
      */
-    public CompositeData findLastOne(final String identifier, final long serverId) {
+    public CompositeDataN findLastOne(final String identifier, final long serverId) {
         Timestamp timestamp = getMaxTime(identifier, serverId);
         if (timestamp == null) {
             return null;
@@ -129,18 +129,18 @@ public class CompositeDataService {
 
 
     /**
-     * Returns a list of CompositeData objects of given com.semonsys.com.semonsys.server. Only last values are used.
+     * Returns a list of CompositeDataN objects of given server. Only last values are used.
      *
-     * @param serverId com.semonsys.com.semonsys.server id
-     * @return a list of CompositeData objects
+     * @param serverId server id
+     * @return a list of CompositeDataN objects
      */
-    public List<CompositeData> findLastAll(final long serverId) {
-        List<CompositeData> list = new ArrayList<>();
+    public List<CompositeDataN> findLastAll(final long serverId) {
+        List<CompositeDataN> list = new ArrayList<>();
 
         List<String> identifiers = findIdentifiers(serverId);
 
         for (String identifier : identifiers) {
-            CompositeData compositeData = findLastOne(identifier, serverId);
+            CompositeDataN compositeData = findLastOne(identifier, serverId);
             if (compositeData != null) {
                 list.add(compositeData);
             }
@@ -151,10 +151,10 @@ public class CompositeDataService {
 
 
     /**
-     * Returns a list of identifies which are possible to use with given com.semonsys.com.semonsys.server
+     * Returns a list of identifies which are possible to use with given server
      *
-     * @param serverId com.semonsys.com.semonsys.server id
-     * @return a list of identifiers of given com.semonsys.com.semonsys.server
+     * @param serverId server id
+     * @return a list of identifiers of given server
      */
     public List<String> findIdentifiers(final long serverId) {
         List<String> list;
@@ -178,8 +178,8 @@ public class CompositeDataService {
 
 
     @Transactional
-    public boolean save(final CompositeData data, final long serverId) {
-        for (SingleData innerData : data.getData()) {
+    public boolean save(final CompositeDataN data, final long serverId) {
+        for (SingleDataN innerData : data.getData()) {
             if (innerData.getType() == DataType.LIST || innerData.getType() == DataType.NONE) {
                 entityManager.getTransaction().rollback();
                 return false;
@@ -222,7 +222,7 @@ public class CompositeDataService {
         }
     }
 
-    private CompositeData findByTime(final String identifier, final long serverId, final Timestamp timestamp) {
+    private CompositeDataN findByTime(final String identifier, final long serverId, final Timestamp timestamp) {
         List<Object[]> objects;
 
         try {
@@ -257,10 +257,10 @@ public class CompositeDataService {
             return null;
         }
 
-        CompositeData compositeData = new CompositeData();
+        CompositeDataN compositeData = new CompositeDataN();
         compositeData.setName(identifier);
 
-        List<SingleData> list = new ArrayList<>();
+        List<SingleDataN> list = new ArrayList<>();
 
         for (Object[] object : objects) {
             list.add(convertObjectToData(object));
@@ -290,8 +290,8 @@ public class CompositeDataService {
         }
     }
 
-    private SingleData convertObjectToData(final Object[] object) {
-        SingleData singleData = new SingleData();
+    private SingleDataN convertObjectToData(final Object[] object) {
+        SingleDataN singleData = new SingleDataN();
 
         singleData.setDataTypeName((String) object[0]);
         singleData.setGroupName((String) object[GROUP_NAME_COLUMN_NUMBER]);

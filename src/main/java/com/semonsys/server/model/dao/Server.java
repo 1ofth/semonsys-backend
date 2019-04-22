@@ -1,4 +1,4 @@
-package com.semonsys.server.model;
+package com.semonsys.server.model.dao;
 
 import lombok.Data;
 
@@ -22,12 +22,15 @@ public class Server {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "server_id_seq")
     @SequenceGenerator(name = "server_id_seq", sequenceName = "server_id_seq", allocationSize = 1)
     private Long id;
-    @ManyToOne(fetch = FetchType.EAGER)
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_login")
+
     private User user;
     private String name;
     private String description;
     private String ip;
+
     // default values
     private Integer port;
     private Boolean activated;

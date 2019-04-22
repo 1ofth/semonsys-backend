@@ -1,8 +1,8 @@
 package com.semonsys.server.controller;
 
 import com.google.gson.Gson;
+import com.semonsys.server.model.dao.CompositeDataN;
 import com.semonsys.server.service.db.storedData.CompositeDataService;
-import com.semonsys.server.model.CompositeData;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -28,7 +28,7 @@ public class CompositeDataController {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
-        CompositeData compositeData = compositeDataService.findLastOne(identifier, serverId);
+        CompositeDataN compositeData = compositeDataService.findLastOne(identifier, serverId);
 
         if (compositeData == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -44,7 +44,7 @@ public class CompositeDataController {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
-        List<CompositeData> compositeData = compositeDataService.findLastAll(serverId);
+        List<CompositeDataN> compositeData = compositeDataService.findLastAll(serverId);
 
         return Response.ok(new Gson().toJson(compositeData)).build();
     }
@@ -58,7 +58,7 @@ public class CompositeDataController {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
-        List<CompositeData> list = compositeDataService.findOneAfter(identifier, serverId, new Timestamp(time));
+        List<CompositeDataN> list = compositeDataService.findOneAfter(identifier, serverId, new Timestamp(time));
 
         return Response.ok(new Gson().toJson(list)).build();
     }

@@ -1,6 +1,6 @@
 package com.semonsys.server.service.db;
 
-import com.semonsys.server.model.DataType;
+import com.semonsys.server.model.dao.DataType;
 import lombok.Setter;
 
 import javax.ejb.Stateless;

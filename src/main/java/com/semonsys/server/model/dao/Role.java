@@ -1,4 +1,4 @@
-package com.semonsys.server.model;
+package com.semonsys.server.model.dao;
 
 import lombok.Data;
 

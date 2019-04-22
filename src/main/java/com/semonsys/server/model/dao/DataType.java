@@ -1,9 +1,10 @@
-package com.semonsys.server.model;
+package com.semonsys.server.model.dao;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -13,15 +14,17 @@ import javax.persistence.Table;
 
 @Entity
 @Data
-@Table(name = "data_group")
+@Table(name = "data_type")
 @AllArgsConstructor
 @NoArgsConstructor
-public class DataGroup {
+public class DataType {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "data_group_id_seq")
-    @SequenceGenerator(name = "data_group_id_seq", sequenceName = "data_group_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "data_type_id_seq")
+    @SequenceGenerator(name = "data_type_id_seq", sequenceName = "data_type_id_seq", allocationSize = 1)
     private Long id;
 
+    @Column(name = "user_login")
+    private String userLogin;
     private String name;
     private String description;
 }

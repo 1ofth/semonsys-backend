@@ -1,16 +1,15 @@
-package com.semonsys.server.model;
+package com.semonsys.server.model.dao;
 
 import com.semonsys.shared.DataType;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Objects;
 
 
-public class SingleData implements Serializable {
+public class SingleDataN implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Getter @Setter
@@ -44,7 +43,7 @@ public class SingleData implements Serializable {
         this.value = value;
     }
 
-    public void setValue(final List<SingleData> value) {
+    public void setValue(final List<SingleDataN> value) {
         type = DataType.LIST;
         this.value = value;
     }
@@ -59,7 +58,7 @@ public class SingleData implements Serializable {
             return false;
         }
 
-        SingleData that = (SingleData) o;
+        SingleDataN that = (SingleDataN) o;
         return Objects.equals(time, that.time)
             && Objects.equals(dataTypeName, that.dataTypeName)
             && Objects.equals(groupName, that.groupName)

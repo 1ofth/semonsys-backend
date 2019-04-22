@@ -1,4 +1,4 @@
-package com.semonsys.server.model;
+package com.semonsys.server.model.dao;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -12,9 +12,9 @@ import java.util.List;
 @Setter
 @EqualsAndHashCode
 @ToString
-public class CompositeData implements Serializable {
+public class CompositeDataN implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private List<SingleData> data;
+    private List<SingleDataN> data;
     private String name;
 }

@@ -1,25 +1,23 @@
 package com.semonsys.server.service.db.storedData;
 
-import com.semonsys.server.model.DataGroup;
+import com.semonsys.server.model.dao.DataGroup;
+import com.semonsys.server.model.dao.SingleDataN;
 import com.semonsys.server.service.db.DataGroupService;
 import com.semonsys.server.service.db.DataTypeService;
 import com.semonsys.shared.DataType;
-import com.semonsys.server.model.SingleData;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import javax.transaction.Transactional;
 import java.math.BigInteger;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 @Stateless
-public class SingleDataService {
+public class SingleDataServiceN {
     private static final int GROUP_NAME_COLUMN_NUMBER = 1;
     private static final int TIME_COLUMN_NUMBER = 2;
     private static final int LONG_VALUE_COLUMN_NUMBER = 3;
@@ -39,11 +37,11 @@ public class SingleDataService {
      * Returns a list of single data objects with one data type from timestamp time to newest ones
      *
      * @param dataTypeName a name of type of stored data
-     * @param serverId     id of a com.semonsys.com.semonsys.server data belongs to
+     * @param serverId     id of a server data belongs to
      * @param time    a time to use as a lowest time of returning pack of data
-     * @return a list of SingleData objects
+     * @return a list of SingleDataN objects
      */
-    public List<SingleData> findAfter(final String dataTypeName, final long serverId, final Long time) {
+    public List<SingleDataN> findAfter(final String dataTypeName, final long serverId, final Long time) {
         List<Object[]> objects;
 
         try {
@@ -80,10 +78,10 @@ public class SingleDataService {
             return null;
         }
 
-        List<SingleData> list = new ArrayList<>();
+        List<SingleDataN> list = new ArrayList<>();
 
         for (Object[] object : objects) {
-            SingleData singleData = convertObjectToData(object);
+            SingleDataN singleData = convertObjectToData(object);
 
             list.add(singleData);
         }
@@ -95,22 +93,22 @@ public class SingleDataService {
 
 
     /**
-     * Returns a list of SingleData objects which contains ALL possible data types of given com.semonsys.com.semonsys.server and user
+     * Returns a list of SingleDataN objects which contains ALL possible data types of given com.semonsys.com.semonsys.server and user
      *
      * @param serverId id of a com.semonsys.com.semonsys.server data belongs to
      * @param userName a user name will be used to find all possible data types
-     * @return a list of SingleData objects containing objects of each possible type of user's data
+     * @return a list of SingleDataN objects containing objects of each possible type of user's data
      */
-    public List<SingleData> findLastAll(final long serverId, final String userName) {
-        List<SingleData> list = new ArrayList<>();
-        List<com.semonsys.server.model.DataType> types = dataTypeService.findWithDefault(userName);
+    public List<SingleDataN> findLastAll(final long serverId, final String userName) {
+        List<SingleDataN> list = new ArrayList<>();
+        List<com.semonsys.server.model.dao.DataType> types = dataTypeService.findWithDefault(userName);
 
         if (types == null) {
             return null;
         }
 
-        for (com.semonsys.server.model.DataType dataType : types) {
-            SingleData singleData = findLastOne(dataType.getName(), serverId);
+        for (com.semonsys.server.model.dao.DataType dataType : types) {
+            SingleDataN singleData = findLastOne(dataType.getName(), serverId);
             if (singleData != null) {
                 list.add(singleData);
             }
@@ -123,13 +121,13 @@ public class SingleDataService {
 
 
     /**
-     * Returns only last one SingleData object with given data type of given com.semonsys.com.semonsys.server
+     * Returns only last one SingleDataN object with given data type of given com.semonsys.com.semonsys.server
      *
      * @param dataTypeName data type's name
      * @param serverId     com.semonsys.com.semonsys.server id
-     * @return a last one SingleData object
+     * @return a last one SingleDataN object
      */
-    public SingleData findLastOne(final String dataTypeName, final long serverId) {
+    public SingleDataN findLastOne(final String dataTypeName, final long serverId) {
         Object[] object;
         try {
             object = (Object[]) entityManager.createNativeQuery(
@@ -161,7 +159,7 @@ public class SingleDataService {
             return null;
         }
 
-        SingleData singleData = new SingleData();
+        SingleDataN singleData = new SingleDataN();
 
         singleData.setDataTypeName(dataTypeName);
         singleData.setGroupName((String) object[GROUP_NAME_COLUMN_NUMBER]);
@@ -179,7 +177,7 @@ public class SingleDataService {
     }
 
 
-    public BigInteger save(final SingleData data, final Long serverId) {
+    public BigInteger save(final SingleDataN data, final Long serverId) {
         if (data.getType() == DataType.NONE || data.getType() == DataType.LIST) {
             return null;
         }
@@ -190,7 +188,7 @@ public class SingleDataService {
             return null;
         }
 
-        com.semonsys.server.model.DataType dataType = dataTypeService.findByName(data.getDataTypeName());
+        com.semonsys.server.model.dao.DataType dataType = dataTypeService.findByName(data.getDataTypeName());
 
         if (dataType == null) {
             return null;
@@ -213,8 +211,8 @@ public class SingleDataService {
 
     }
 
-    public void save(final List<SingleData> list, final long serverId){
-        for(SingleData data : list){
+    public void save(final List<SingleDataN> list, final long serverId){
+        for(SingleDataN data : list){
             save(data, serverId);
         }
     }
@@ -236,7 +234,7 @@ public class SingleDataService {
         return result;
     }
 
-    private BigInteger insertIntoParam(final SingleData data) {
+    private BigInteger insertIntoParam(final SingleDataN data) {
         switch (data.getType()) {
             case LONG:
                 entityManager.createNativeQuery("INSERT INTO param(text_value, int_value, float_value) VALUES (NULL, ?, NULL);")
@@ -263,8 +261,8 @@ public class SingleDataService {
         return (BigInteger) entityManager.createNativeQuery("SELECT last_value FROM param_id_seq;").getSingleResult();
     }
 
-    private SingleData convertObjectToData(final Object[] object) {
-        SingleData singleData = new SingleData();
+    private SingleDataN convertObjectToData(final Object[] object) {
+        SingleDataN singleData = new SingleDataN();
 
         singleData.setDataTypeName((String) object[0]);
         singleData.setGroupName((String) object[GROUP_NAME_COLUMN_NUMBER]);

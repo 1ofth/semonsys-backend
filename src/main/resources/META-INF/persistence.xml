@@ -6,6 +6,7 @@
     <jta-data-source>java:/PostgresDS</jta-data-source>
     <properties>
         <property name="hibernate.generate_statistics" value="true"/>
+        <property name="org.hibernate.flushMode" value="COMMIT"/>
     </properties>
 </persistence-unit>
 </persistence>

@@ -1,6 +1,6 @@
 package com.semonsys.server.service.db;
 
-import com.semonsys.server.model.Server;
+import com.semonsys.server.model.dao.Server;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;

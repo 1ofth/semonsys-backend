@@ -1,6 +1,6 @@
 package com.semonsys.server.service.logic;
 
-import com.semonsys.server.model.DataGroup;
+import com.semonsys.server.model.dao.DataGroup;
 import com.semonsys.server.service.db.DataGroupService;
 
 import javax.ejb.EJB;
