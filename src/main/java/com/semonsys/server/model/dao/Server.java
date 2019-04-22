@@ -25,8 +25,8 @@ public class Server {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_login")
-
     private User user;
+
     private String name;
     private String description;
     private String ip;
@@ -34,6 +34,7 @@ public class Server {
     // default values
     private Integer port;
     private Boolean activated;
+
     @Column(name = "act_data")
     private String actData;
 

@@ -12,6 +12,7 @@ import java.util.List;
 @Setter
 @EqualsAndHashCode
 @ToString
+@Deprecated
 public class CompositeDataN implements Serializable {
     private static final long serialVersionUID = 1L;
 

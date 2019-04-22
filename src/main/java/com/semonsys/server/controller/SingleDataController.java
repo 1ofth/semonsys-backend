@@ -43,16 +43,20 @@ public class SingleDataController {
         for(SingleData data : singleData){
             SingleDataTO singleDataTO = new SingleDataTO();
 
-            log.info("SingleData object: " + data.getLongValue() + "  " + data.getDoubleValue() + "  " + data.getStringValue() + "  " + data.getTime());
+            log.debug("SingleData object: " + data.getParam().getLongValue() + "  " + data.getParam().getDoubleValue() +
+                "  " + data.getParam().getStringValue() + "  " + data.getTime());
 
             singleDataTO.setTime(data.getTime());
 
-            if(data.getDoubleValue() != null) {
-                singleDataTO.setValue(data.getDoubleValue().toString());
-            } else if(data.getLongValue() != null){
-                singleDataTO.setValue(data.getLongValue().toString());
+            if(data.getParam().getDoubleValue() != null) {
+                singleDataTO.setValue(data.getParam().getDoubleValue().toString());
+                log.debug("double\n");
+            } else if(data.getParam().getLongValue() != null){
+                singleDataTO.setValue(data.getParam().getLongValue().toString());
+                log.debug("long\n");
             } else {
-                singleDataTO.setValue(data.getStringValue());
+                singleDataTO.setValue(data.getParam().getStringValue());
+                log.debug("string\n");
             }
 
             singleDataTOES.add(singleDataTO);

@@ -4,7 +4,7 @@ import com.semonsys.server.model.dao.CompositeDataN;
 import com.semonsys.server.model.dao.Server;
 import com.semonsys.server.model.dao.SingleDataN;
 import com.semonsys.server.service.db.ServerService;
-import com.semonsys.server.service.db.storedData.CompositeDataService;
+import com.semonsys.server.service.db.storedData.CompositeDataServiceN;
 import com.semonsys.server.service.db.storedData.SingleDataServiceN;
 import com.semonsys.shared.AgentSingleData;
 import com.semonsys.shared.DataType;
@@ -29,7 +29,7 @@ public class AgentDataGetter {
     private SingleDataServiceN singleDataService;
 
     @EJB
-    private CompositeDataService compositeDataService;
+    private CompositeDataServiceN compositeDataService;
 
     @EJB
     private ServerService serverService;

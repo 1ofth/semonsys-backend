@@ -27,4 +27,16 @@ public class SingleDataService {
             return new ArrayList<>();
         }
     }
+    
+    public List<SingleData> findAfter(final long time){
+        try {
+            return entityManager.createQuery("SELECT data FROM SingleData AS data WHERE data.time > :time",
+                SingleData.class)
+                .setParameter("time", time)
+                .getResultList();
+
+        } catch (NoResultException e) {
+            return new ArrayList<>();
+        }
+    }
 }

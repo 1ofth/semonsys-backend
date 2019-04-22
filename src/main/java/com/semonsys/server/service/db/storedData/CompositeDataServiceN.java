@@ -17,7 +17,8 @@ import java.util.List;
 import java.util.Objects;
 
 @Stateless
-public class CompositeDataService {
+@Deprecated
+public class CompositeDataServiceN {
     private static final int GROUP_NAME_COLUMN_NUMBER = 1;
     private static final int TIME_COLUMN_NUMBER = 2;
     private static final int LONG_VALUE_COLUMN_NUMBER = 3;

@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Stateless
+@Deprecated
 public class SingleDataServiceN {
     private static final int GROUP_NAME_COLUMN_NUMBER = 1;
     private static final int TIME_COLUMN_NUMBER = 2;

@@ -2,7 +2,7 @@ package com.semonsys.server.controller;
 
 import com.google.gson.Gson;
 import com.semonsys.server.model.dao.CompositeDataN;
-import com.semonsys.server.service.db.storedData.CompositeDataService;
+import com.semonsys.server.service.db.storedData.CompositeDataServiceN;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -18,7 +18,7 @@ import java.util.List;
 public class CompositeDataController {
 
     @EJB
-    private CompositeDataService compositeDataService;
+    private CompositeDataServiceN compositeDataService;
 
     @GET
     @Path("/one")

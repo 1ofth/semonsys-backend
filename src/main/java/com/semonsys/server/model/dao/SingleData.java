@@ -1,13 +1,11 @@
 package com.semonsys.server.model.dao;
 
 import lombok.Data;
-
 import javax.persistence.*;
 
 @Entity
 @Data
 @Table(name = "data")
-@SecondaryTable(name = "param")
 public class SingleData {
 
     @Id
@@ -19,17 +17,19 @@ public class SingleData {
     @JoinColumn(name = "server_id")
     private Server server = null;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "data_type_id")
+    private DataType dataType;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "data_group_id")
+    private DataGroup dataGroup;
+
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "param_id")
+    private Param param;
+
     private Long time;
-
-
-    @Column(table = "param", name = "int_value")
-    private Long longValue;
-
-    @Column(table = "param", name = "float_value")
-    private Double doubleValue;
-
-    @Column(table = "param", name = "text_value")
-    private String stringValue;
 
     public SingleData() {}
 }
