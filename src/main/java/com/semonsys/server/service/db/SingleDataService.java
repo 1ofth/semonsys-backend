@@ -1,14 +1,10 @@
 package com.semonsys.server.service.db;
 
 import com.semonsys.server.model.dao.SingleData;
-import com.semonsys.server.model.dao.SingleDataN;
 import com.semonsys.server.model.dto.ParamTO;
 import com.semonsys.server.model.dto.SingleDataTO;
 
-import javax.annotation.Resource;
 import javax.ejb.Stateless;
-import javax.ejb.TransactionManagement;
-import javax.ejb.TransactionManagementType;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -52,6 +48,7 @@ public class SingleDataService {
 
         String query = "SELECT \n" +
             "    dt.name,\n" +
+            "    dt.monitoring, \n" +
             "    data.time,\n" +
             "    param.int_value,\n" +
             "    param.float_value,\n" +

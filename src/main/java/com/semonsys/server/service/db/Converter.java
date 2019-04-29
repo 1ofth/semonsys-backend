@@ -6,7 +6,8 @@ import com.semonsys.server.model.dto.SingleDataTO;
 import java.math.BigInteger;
 
 public class Converter {
-    public static ParamTO convertToParamTO(Object[] object){
+
+    public static ParamTO convertToParamTO(final Object[] object){
         ParamTO param = new ParamTO();
 
         param.setTime( ((BigInteger)object[0]).longValue() );
@@ -21,13 +22,14 @@ public class Converter {
         return param;
     }
 
-    public static SingleDataTO convertToSingleDataTO(Object[] object){
+    public static SingleDataTO convertToSingleDataTO(final Object[] object){
         SingleDataTO singleData = new SingleDataTO();
 
         singleData.setType((String)object[0]);
+        singleData.setMonitoring((Boolean)object[1]);
 
         Object[] objects = new Object[4];
-        System.arraycopy(object, 1, objects, 0, 4);
+        System.arraycopy(object, 2, objects, 0, 4);
 
         singleData.setParam(convertToParamTO(objects));
 

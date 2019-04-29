@@ -3,17 +3,12 @@ package com.semonsys.server.controller;
 import com.google.gson.Gson;
 import com.semonsys.server.interceptor.MethodParamsInterceptor;
 import com.semonsys.server.model.dao.Server;
-import com.semonsys.server.model.dao.SingleData;
 import com.semonsys.server.model.dto.ParamTO;
 import com.semonsys.server.model.dto.SingleDataTO;
 import com.semonsys.server.service.db.ServerService;
 import com.semonsys.server.service.db.SingleDataService;
-import com.semonsys.server.service.db.storedData.SingleDataServiceN;
-import com.semonsys.server.model.dao.SingleDataN;
 import com.semonsys.server.service.logic.agent.AgentDataGetter;
 import lombok.extern.log4j.Log4j;
-import lombok.extern.log4j.Log4j2;
-import lombok.extern.slf4j.Slf4j;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -26,9 +21,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 @Log4j
 @Stateless

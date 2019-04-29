@@ -2,14 +2,12 @@ package com.semonsys.server.controller;
 
 import com.google.gson.Gson;
 import com.semonsys.server.interceptor.MethodParamsInterceptor;
-import com.semonsys.server.model.dao.CompositeDataN;
 import com.semonsys.server.model.dao.Server;
 import com.semonsys.server.model.dto.IdentifierTO;
 import com.semonsys.server.model.dto.ParamTO;
 import com.semonsys.server.model.dto.SingleDataTO;
 import com.semonsys.server.service.db.CompositeDataService;
 import com.semonsys.server.service.db.ServerService;
-import com.semonsys.server.service.db.storedData.CompositeDataServiceN;
 import com.semonsys.server.service.logic.agent.AgentDataGetter;
 
 import javax.ejb.EJB;
@@ -23,7 +21,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 

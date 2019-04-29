@@ -1,5 +1,9 @@
 package com.semonsys.server.controller;
 
+import com.google.gson.Gson;
+import com.semonsys.server.model.dao.DataType;
+import com.semonsys.server.model.dto.DataTypeTO;
+import com.semonsys.server.service.db.DataTypeService;
 import com.semonsys.server.service.logic.DataTypeControllerLogic;
 
 import javax.ejb.EJB;
@@ -14,6 +18,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
+import java.util.ArrayList;
+import java.util.List;
 
 @Stateless
 @Path("/rest/secured/data_type")
@@ -25,9 +31,19 @@ public class DataTypeController {
     @EJB
     private DataTypeControllerLogic logic;
 
+    @EJB
+    private DataTypeService dataTypeService;
+
     @GET
     public Response getDataTypes() {
-        return logic.getAllTypes(securityContext.getUserPrincipal().getName());
+        List<DataType> list = dataTypeService.findWithDefault(securityContext.getUserPrincipal().getName());
+
+        List<DataTypeTO> result = new ArrayList<>();
+        for(DataType dataType : list){
+            result.add(DataTypeTO.convert(dataType));
+        }
+
+        return Response.ok(new Gson().toJson(result)).build();
     }
 
     @GET

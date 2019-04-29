@@ -18,7 +18,7 @@ public class DataTypeService {
 
     public List<DataType> find(final String userLogin) {
         try {
-            return entityManager.createQuery("SELECT dt FROM DataType AS dt WHERE dt.user_login = :login", DataType.class)
+            return entityManager.createQuery("SELECT dt FROM DataType AS dt WHERE dt.userLogin = :login", DataType.class)
                 .setParameter("login", userLogin)
                 .getResultList();
         } catch (NoResultException e) {
@@ -29,8 +29,8 @@ public class DataTypeService {
     // returns all types. And user's, and default ones
     public List<DataType> findWithDefault(final String userName) {
         try {
-            return entityManager.createQuery("SELECT dt FROM DataType AS dt WHERE dt.user_login is null "
-                + "OR dt.user_login = :login", DataType.class)
+            return entityManager.createQuery("SELECT dt FROM DataType AS dt WHERE dt.userLogin is null "
+                + "OR dt.userLogin = :login", DataType.class)
                 .setParameter("login", userName)
                 .getResultList();
         } catch (NoResultException e) {
@@ -64,7 +64,7 @@ public class DataTypeService {
 
     // removes in case dataType's owner is given user
     public boolean removeUserType(final Long id, final String userName) {
-        int amount = entityManager.createQuery("DELETE FROM DataType AS dt WHERE dt.user_login = :login AND dt.id = :id")
+        int amount = entityManager.createQuery("DELETE FROM DataType AS dt WHERE dt.userLogin = :login AND dt.id = :id")
             .setParameter("id", id)
             .setParameter("login", userName)
             .executeUpdate();

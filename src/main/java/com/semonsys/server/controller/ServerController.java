@@ -6,7 +6,6 @@ import com.semonsys.server.model.dao.User;
 import com.semonsys.server.model.dto.ServerTO;
 import com.semonsys.server.service.db.ServerService;
 import com.semonsys.server.service.db.UserService;
-import com.semonsys.server.service.logic.ServerControllerLogic;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -17,7 +16,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -44,17 +42,21 @@ public class ServerController {
         List<ServerTO> result = new ArrayList<>();
         List<Server> list = serverService.find(securityContext.getUserPrincipal().getName());
 
+        int i = 1;
         if(list != null) {
             for (Server server : list) {
                 ServerTO serverTO = new ServerTO();
 
                 serverTO.setIp(server.getIp());
+                serverTO.setId(i);
                 serverTO.setPort(server.getPort());
                 serverTO.setName(server.getName());
                 serverTO.setDescription(server.getDescription());
                 serverTO.setActivated(server.getActivated());
 
                 result.add(serverTO);
+
+                i+=1;
             }
         }
 
