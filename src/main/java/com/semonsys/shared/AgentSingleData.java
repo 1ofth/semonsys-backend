@@ -25,6 +25,8 @@ public class AgentSingleData implements Serializable {
 
 
     private Object value;
+
+    // param type
     private DataType type = DataType.NONE;
 
     @Setter

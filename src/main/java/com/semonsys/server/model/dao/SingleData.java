@@ -25,9 +25,13 @@ public class SingleData {
     @JoinColumn(name = "data_group_id")
     private DataGroup dataGroup;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "param_id")
     private Param param;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "comp_id")
+    private CompositeData compositeData;
 
     private Long time;
 

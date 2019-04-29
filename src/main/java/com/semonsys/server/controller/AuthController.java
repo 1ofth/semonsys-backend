@@ -1,5 +1,6 @@
 package com.semonsys.server.controller;
 
+import com.semonsys.server.interceptor.MethodParamsInterceptor;
 import com.semonsys.server.model.dao.User;
 import com.semonsys.server.security.JwtManager;
 import com.semonsys.server.service.db.UserService;
@@ -8,6 +9,7 @@ import lombok.extern.java.Log;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -62,6 +64,7 @@ public class AuthController {
         return Response.status(Response.Status.BAD_REQUEST).build();
     }
 
+    @Interceptors(MethodParamsInterceptor.class)
     @POST
     @Path("/login")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)

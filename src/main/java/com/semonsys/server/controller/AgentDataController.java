@@ -47,6 +47,7 @@ public class AgentDataController {
         if (serverId == null) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
+/*
 
         try {
             agentDataGetter.updateData(serverId);
@@ -55,6 +56,7 @@ public class AgentDataController {
         } catch (NotBoundException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("NotBoundException").build();
         }
+*/
 
         return Response.ok().build();
 

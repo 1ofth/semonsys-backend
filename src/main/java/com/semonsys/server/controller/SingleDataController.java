@@ -1,119 +1,110 @@
 package com.semonsys.server.controller;
 
 import com.google.gson.Gson;
+import com.semonsys.server.interceptor.MethodParamsInterceptor;
+import com.semonsys.server.model.dao.Server;
 import com.semonsys.server.model.dao.SingleData;
+import com.semonsys.server.model.dto.ParamTO;
 import com.semonsys.server.model.dto.SingleDataTO;
+import com.semonsys.server.service.db.ServerService;
+import com.semonsys.server.service.db.SingleDataService;
 import com.semonsys.server.service.db.storedData.SingleDataServiceN;
 import com.semonsys.server.model.dao.SingleDataN;
+import com.semonsys.server.service.logic.agent.AgentDataGetter;
 import lombok.extern.log4j.Log4j;
 import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
 @Log4j
 @Stateless
-@Path("/rest/secured/data/single")
+@Path("/rest/secured/data/sing")
 public class SingleDataController {
+
+    @EJB
+    private SingleDataService singleDataService;
+
+    @EJB
+    private ServerService serverService;
+
+    @EJB
+    private AgentDataGetter agentDataGetter;
+
+
     @Context
     private SecurityContext securityContext;
 
-    @EJB
-    private SingleDataServiceN singleDataService;
-
-    @EJB
-    private com.semonsys.server.service.db.SingleDataService singleDataServiceNN;
 
     @GET
-    @Path("/test")
-    public Response test(){
-        List<SingleData> singleData = singleDataServiceNN.find().subList(0, 10);
-        List<SingleDataTO> singleDataTOES = new ArrayList<>();
-
-        for(SingleData data : singleData){
-            SingleDataTO singleDataTO = new SingleDataTO();
-
-            log.debug("SingleData object: " + data.getParam().getLongValue() + "  " + data.getParam().getDoubleValue() +
-                "  " + data.getParam().getStringValue() + "  " + data.getTime());
-
-            singleDataTO.setTime(data.getTime());
-
-            if(data.getParam().getDoubleValue() != null) {
-                singleDataTO.setValue(data.getParam().getDoubleValue().toString());
-                log.debug("double\n");
-            } else if(data.getParam().getLongValue() != null){
-                singleDataTO.setValue(data.getParam().getLongValue().toString());
-                log.debug("long\n");
-            } else {
-                singleDataTO.setValue(data.getParam().getStringValue());
-                log.debug("string\n");
-            }
-
-            singleDataTOES.add(singleDataTO);
-        }
-
-        return Response.ok(new Gson().toJson(singleDataTOES)).build();
-    }
-
-    @GET
-    @Path("/all")
-    public Response getLastAll(@QueryParam("server_id") final Long serverId) {
-        if (serverId == null) {
+    @Path("/last")
+    @Interceptors(MethodParamsInterceptor.class)
+    public Response getLastAll(@QueryParam("group") final String groupName,
+                               @QueryParam("server") final String serverName){
+        if(groupName == null || serverName == null){
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
-        List<SingleDataN> list = singleDataService.findLastAll(serverId, securityContext.getUserPrincipal().getName());
+        Server server = serverService.find(securityContext.getUserPrincipal().getName(), serverName);
 
-        if (list == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        } else {
-            return Response.ok(new Gson().toJson(list)).build();
-        }
-    }
-
-    @GET
-    @Path("/one")
-    public Response getLastOne(@QueryParam("data_type") final String dataType,
-                               @QueryParam("server_id") final Long serverId) {
-        if (dataType == null || serverId == null) {
+        if(server == null){
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
-        SingleDataN singleData = singleDataService.findLastOne(dataType, serverId);
-
-        if (singleData == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        } else {
-            return Response.ok(new Gson().toJson(singleData)).build();
+        try {
+            agentDataGetter.updateData(server);
+        } catch (RemoteException | NotBoundException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
+
+        List<SingleDataTO> list = singleDataService.findLastSingleDataList(groupName, server.getId());
+
+        return Response.ok(new Gson().toJson(list)).build();
     }
 
     @GET
-    @Path("/after")
-    public Response getOneAfter(@QueryParam("data_type") final String dataType,
-                                @QueryParam("server_id") final Long serverId,
-                                @QueryParam("time") final Long time) {
-        if (time == null || dataType == null || serverId == null) {
+    @Path("/series")
+    @Interceptors(MethodParamsInterceptor.class)
+    public Response getSeries(@QueryParam("server") final String serverName,
+                              @QueryParam("group") final String dataGroupName,
+                              @QueryParam("type") final String dataTypeName,
+                              @QueryParam("time") final Long time){
+
+        if(serverName == null || dataGroupName == null || dataTypeName == null || time == null){
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
-        List<SingleDataN> singleData = singleDataService.findAfter(dataType, serverId, time);
+        Server server = serverService.find(securityContext.getUserPrincipal().getName(), serverName);
 
-        if (singleData == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        } else {
-            return Response.ok(new Gson().toJson(singleData)).build();
+        if(server == null){
+            return Response.status(Response.Status.BAD_REQUEST).build();
         }
+
+        log.info("Data getting for agent '" + serverName + "' is being processing.");
+
+        try {
+            agentDataGetter.updateData(server);
+        } catch (RemoteException | NotBoundException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+
+
+        List<ParamTO> list = singleDataService.findAllParamsFromTime(dataGroupName, dataTypeName, server.getId(), time);
+
+        return Response.ok(new Gson().toJson(list)).build();
     }
 
 

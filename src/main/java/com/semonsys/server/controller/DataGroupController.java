@@ -1,5 +1,9 @@
 package com.semonsys.server.controller;
 
+import com.google.gson.Gson;
+import com.semonsys.server.model.dao.DataGroup;
+import com.semonsys.server.model.dto.DataGroupTO;
+import com.semonsys.server.service.db.DataGroupService;
 import com.semonsys.server.service.logic.DataGroupControllerLogic;
 
 import javax.ejb.EJB;
@@ -8,21 +12,31 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
+import java.util.List;
+
 @Stateless
-@Path("/rest/secured/data_group")
+@Path("/rest/secured/group")
 public class DataGroupController {
 
     @EJB
-    private DataGroupControllerLogic logic;
+    private DataGroupService dataGroupService;
 
+    // returns all data groups objects
     @GET
-    public Response getAll() {
-        return logic.getAll();
-    }
+    public Response get(){
+        List<DataGroupTO> result = new ArrayList<>();
+        List<DataGroup> list = dataGroupService.find();
 
-    @GET
-    @Path("/{id}")
-    public Response get(@PathParam("id") final Long id) {
-        return logic.get(id);
+        for(DataGroup dataGroup : list) {
+            DataGroupTO dataGroupTO = new DataGroupTO();
+
+            dataGroupTO.setDescription(dataGroup.getDescription());
+            dataGroupTO.setName(dataGroup.getName());
+
+            result.add(dataGroupTO);
+        }
+
+        return Response.ok(new Gson().toJson(result)).build();
     }
 }

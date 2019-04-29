@@ -3,6 +3,7 @@ package com.semonsys.server.model.dao;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -20,7 +21,6 @@ public class CompositeData {
     @JoinColumn(name = "server_id")
     private Server server;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "data_id")
-    List<SingleData> data;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "compositeData")
+    List<SingleData> data = new ArrayList<>();
 }

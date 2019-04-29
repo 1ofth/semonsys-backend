@@ -27,4 +27,12 @@ public class DataType {
     private String userLogin;
     private String name;
     private String description;
+
+    public DataType(long id, String userLogin, String name, String description) {
+        this.userLogin = userLogin;
+        this.name = name;
+        this.description = description;
+    }
+
+    private Boolean monitoring;
 }

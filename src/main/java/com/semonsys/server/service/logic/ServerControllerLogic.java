@@ -17,6 +17,7 @@ import java.util.Objects;
 
 @Log
 @Stateless
+@Deprecated
 public class ServerControllerLogic {
 
     // finds out all servers of given user. If name of server is given then it returns only that server but in list too
@@ -47,7 +48,7 @@ public class ServerControllerLogic {
     public Response addServer(final String userName, final String serverName,
                               final String description, final String ip,
                               final UserService userService, final ServerService serverService) {
-        User user = userService.find(userName);
+        /*User user = userService.find(userName);
         if (user == null) {
             return Response.status(Response.Status.BAD_REQUEST)
                 .entity("User with name " + userName + " was not found").build();
@@ -67,14 +68,15 @@ public class ServerControllerLogic {
 
         serverService.save(server);
 
-        return Response.ok().build();
+        return Response.ok().build();*/
+        return null;
     }
 
     public Response updateServer(final Long id, final String name,
                                  final String description, final String ip,
                                  final String port, final String userName,
                                  final ServerService serverService) {
-        log.info("Trying to update server with income data:\n\tid: " + id + "\n\tname: " + name + "\n\tdescr: "
+        /*log.info("Trying to update server with income data:\n\tid: " + id + "\n\tname: " + name + "\n\tdescr: "
             + description + "\n\tip: " + ip + "\n\tport: " + port + "\n");
 
         if (id != null) {
@@ -113,6 +115,8 @@ public class ServerControllerLogic {
             return Response.status(Response.Status.BAD_REQUEST)
                 .entity("Id of given server is needed").build();
         }
+        */
+        return null;
     }
 
     public Response deleteServer(final String userName, final Long id,
