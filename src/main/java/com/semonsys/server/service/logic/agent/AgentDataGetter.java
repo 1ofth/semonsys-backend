@@ -124,11 +124,13 @@ public class AgentDataGetter {
 
         DataType dataType = dataTypeService.findByName(data.getDataTypeName());
         if(dataType == null){
+            log.warn("Data type witn name " + data.getDataTypeName() + " was not found!");
             return null;
         }
 
         DataGroup dataGroup = dataGroupService.find(data.getGroupName());
         if (dataGroup == null){
+            log.warn("Data group with name " + data.getGroupName() + " was not found!");
             return null;
         }
 
@@ -157,7 +159,10 @@ public class AgentDataGetter {
         List<SingleData> list = new ArrayList<>();
 
         for(AgentSingleData temp : data){
-            list.add(convertToSingleData(temp, server));
+            SingleData singleData = convertToSingleData(temp, server);
+            if(singleData != null) {
+                list.add(singleData);
+            }
         }
 
         return list;

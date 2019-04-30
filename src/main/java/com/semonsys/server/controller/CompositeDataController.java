@@ -22,7 +22,9 @@ import javax.ws.rs.core.SecurityContext;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Stateless
 @Path("/rest/secured/data/comp")
@@ -62,8 +64,8 @@ public class CompositeDataController {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
 
-        List<String> list = compositeDataService.findIdentifiers(server.getId(), groupName);
-        List<IdentifierTO> result = new ArrayList<>();
+        Set<String> list = compositeDataService.findIdentifiers(server.getId(), groupName);
+        Set<IdentifierTO> result = new HashSet<>();
 
         for(String s : list){
             IdentifierTO identifier = new IdentifierTO();
@@ -128,7 +130,7 @@ public class CompositeDataController {
 
         //return Response.ok().build();
 
-        List<ParamTO> list = compositeDataService.findAllParamsFromTimeWithIdentifier(dataGroupName, dataTypeName, server.getId(), time, identifier);
+        Set<ParamTO> list = compositeDataService.findAllParamsFromTimeWithIdentifier(dataGroupName, dataTypeName, server.getId(), time, identifier);
 
         return Response.ok(new Gson().toJson(list)).build();
     }

@@ -3,6 +3,8 @@ package com.semonsys.server.model.dto;
 import com.google.gson.annotations.SerializedName;
 import com.semonsys.server.model.dao.SingleData;
 
+import java.util.Objects;
+
 public class SingleDataTO {
     @SerializedName(value = "p")
     private ParamTO param = null;
@@ -48,5 +50,20 @@ public class SingleDataTO {
         singleDataTO.setParam(param);
 
         return singleDataTO;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SingleDataTO that = (SingleDataTO) o;
+        return monitoring == that.monitoring &&
+            param.equals(that.param) &&
+            type.equals(that.type);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(param, type, monitoring);
     }
 }

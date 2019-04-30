@@ -22,6 +22,7 @@ import javax.ws.rs.core.SecurityContext;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.Set;
 
 @Log4j
 @Stateless
@@ -63,9 +64,9 @@ public class SingleDataController {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
 
-        List<SingleDataTO> list = singleDataService.findLastSingleDataList(groupName, server.getId());
+        Set<SingleDataTO> result = singleDataService.findLastSingleDataPack(groupName, server.getId());
 
-        return Response.ok(new Gson().toJson(list)).build();
+        return Response.ok(new Gson().toJson(result)).build();
     }
 
     @GET
@@ -94,10 +95,9 @@ public class SingleDataController {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
 
+        Set<ParamTO> result = singleDataService.findAllParamsFromTime(dataGroupName, dataTypeName, server.getId(), time);
 
-        List<ParamTO> list = singleDataService.findAllParamsFromTime(dataGroupName, dataTypeName, server.getId(), time);
-
-        return Response.ok(new Gson().toJson(list)).build();
+        return Response.ok(new Gson().toJson(result)).build();
     }
 
 

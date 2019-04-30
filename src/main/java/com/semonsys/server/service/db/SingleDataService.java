@@ -11,7 +11,9 @@ import javax.persistence.PersistenceContext;
 import javax.transaction.*;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Stateless
 public class SingleDataService {
@@ -43,8 +45,8 @@ public class SingleDataService {
         }
     }
 
-    public List<SingleDataTO> findLastSingleDataList (final String dataGroupName, final  long serverId){
-        List<SingleDataTO> list = new ArrayList<>();
+    public Set<SingleDataTO> findLastSingleDataPack(final String dataGroupName, final  long serverId){
+        Set<SingleDataTO> result = new HashSet<>();
 
         String query = "SELECT \n" +
             "    dt.name,\n" +
@@ -82,18 +84,18 @@ public class SingleDataService {
                 .setParameter("serverId", serverId)
                 .getResultList();
         } catch (NoResultException e){
-            return list;
+            return result;
         }
 
         for(Object[] object : temp){
             SingleDataTO singleData = Converter.convertToSingleDataTO(object);
-            list.add(singleData);
+            result.add(singleData);
         }
 
-        return list;
+        return result;
     }
 
-    public List<ParamTO> findAllParamsFromTime (final String group, final String type, final long serverId, final long time){
+    public Set<ParamTO> findAllParamsFromTime (final String group, final String type, final long serverId, final long time){
 
         String query = "SELECT \n" +
             "    data.time,\n" +
@@ -115,7 +117,7 @@ public class SingleDataService {
             "    AND data_type.name = :type\n" +
             "    AND data.comp_id is NULL\n";
 
-        List<ParamTO> list = new ArrayList<>();
+        Set<ParamTO> list = new HashSet<>();
 
         List<Object[]> temp;
 

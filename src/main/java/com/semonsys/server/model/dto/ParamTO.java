@@ -3,6 +3,8 @@ package com.semonsys.server.model.dto;
 import com.google.gson.annotations.SerializedName;
 import com.semonsys.server.model.dao.Param;
 
+import java.util.Objects;
+
 public class ParamTO {
 
     @SerializedName(value = "v")
@@ -42,5 +44,19 @@ public class ParamTO {
         }
 
         return param;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ParamTO param = (ParamTO) o;
+        return time == param.time &&
+            value.equals(param.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value, time);
     }
 }

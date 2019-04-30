@@ -16,7 +16,9 @@ import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Log4j
 @Stateless
@@ -99,11 +101,11 @@ public class CompositeDataService {
     }
 
     @Interceptors(MethodParamsInterceptor.class)
-    public List<ParamTO> findAllParamsFromTimeWithIdentifier(final String group,
-                                                             final String type,
-                                                             final long serverId,
-                                                             final long time,
-                                                             final String identifier){
+    public Set<ParamTO> findAllParamsFromTimeWithIdentifier(final String group,
+                                                            final String type,
+                                                            final long serverId,
+                                                            final long time,
+                                                            final String identifier){
         String query = "SELECT \n" +
             "    data.time,\n" +
             "    param.int_value,\n" +
@@ -126,7 +128,7 @@ public class CompositeDataService {
             "    AND data_type.name = :type\n" +
             "    AND composite_data.identifier = :identifier";
 
-        List<ParamTO> list = new ArrayList<>();
+        Set<ParamTO> list = new HashSet<>();
 
         List<Object[]> temp;
 
@@ -152,7 +154,7 @@ public class CompositeDataService {
     }
 
     @Interceptors(MethodParamsInterceptor.class)
-    public List<String> findIdentifiers(final long serverId, final String groupName) {
+    public Set<String> findIdentifiers(final long serverId, final String groupName) {
         List<String> list;
         try {
             list = (List<String>) entityManager.createNativeQuery(
@@ -171,11 +173,11 @@ public class CompositeDataService {
                 .setParameter("group", groupName)
                 .getResultList();
         } catch (NoResultException e) {
-            return new ArrayList<>();
+            return new HashSet<>();
         }
 
         log.info("There were " + list.size() + " identifiers objects found from db");
-        return list;
+        return new HashSet<>(list);
     }
 
 

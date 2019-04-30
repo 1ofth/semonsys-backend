@@ -3,7 +3,7 @@ package com.semonsys.server.model.dto;
 import com.google.gson.annotations.SerializedName;
 
 public class IdentifierTO {
-    @SerializedName(value = "v")
+    @SerializedName(value = "n")
     private String value;
 
     public IdentifierTO() {}
