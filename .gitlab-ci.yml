@@ -1,0 +1,57 @@
+image: maven:3-jdk-8
+
+cache:
+  paths:
+    - .m2/repository
+
+variables:
+  MAVEN_CLI_OPTS: "-Dmaven.repo.local=.m2/repository --batch-mode"
+
+stages:
+  - compile
+  - analysis
+  - test
+
+compile:
+  stage: compile
+  only:
+    - dev
+    - master
+  script:
+    - 'mvn $MAVEN_CLI_OPTS clean compile'
+
+pmd:
+  stage: analysis
+  only:
+    - dev
+    - master
+  script:
+    - 'mvn $MAVEN_CLI_OPTS clean pmd:check'
+  artifacts:
+    paths:
+      - target/site/pmd.html
+    when: on_failure
+
+checkstyle:
+  stage: analysis
+  only:
+    - dev
+    - master
+  script:
+    - 'mvn $MAVEN_CLI_OPTS clean checkstyle:check'
+
+findbugs:
+  stage: analysis
+  only:
+    - dev
+    - master
+  script:
+    - 'mvn $MAVEN_CLI_OPTS clean compile findbugs:check'
+
+test:
+  stage: test
+  only:
+    - dev
+    - master
+  script:
+    - 'mvn $MAVEN_CLI_OPTS clean test'
