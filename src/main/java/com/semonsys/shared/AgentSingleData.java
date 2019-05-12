@@ -25,12 +25,13 @@ public class AgentSingleData implements Serializable {
 
 
     private Object value;
-
-    // param type
     private DataType type = DataType.NONE;
 
     @Setter
-    private String compositeDataIdentifier;
+    private boolean immutable = false;
+
+    @Setter
+    private String compositeDataIdentifier = null;
 
     public void setValue(String value) {
         type = DataType.STRING;

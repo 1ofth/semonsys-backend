@@ -6,6 +6,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,8 +34,51 @@ public class ServerService {
                 .setParameter("userLogin", userName)
                 .getResultList();
         } catch (NoResultException n) {
-            return null;
+            return new ArrayList<>();
         }
+    }
+
+    public List<Server> findActivated(final String userName){
+        try {
+            return entityManager.createQuery(
+                "select s " +
+                    "from Server as s " +
+                    "where " +
+                    "   s.user.login = :userLogin" +
+                    "   AND s.activated = true", Server.class)
+                .setParameter("userLogin", userName)
+                .getResultList();
+        } catch (NoResultException n) {
+            return new ArrayList<>();
+        }
+    }
+
+    public boolean existServerWithSameIpAndPort(final String ip, final int port){
+        try{
+            Server server = entityManager.createQuery(
+                "SELECT " +
+                    "   s " +
+                    "FROM " +
+                    "   Server AS s " +
+                    "WHERE " +
+                    "   s.ip = :ip " +
+                    "   AND s.port = :port " +
+                    "   AND s.activated = true ",
+                Server.class
+            )
+                .setParameter("ip", ip)
+                .setParameter("port", port)
+                .getSingleResult();
+
+            if(server != null){
+                return true;
+            }
+
+        } catch (NoResultException e){
+            return false;
+        }
+
+        return false;
     }
 
     public Server find(final String userName, final String serverName) {
@@ -69,7 +113,7 @@ public class ServerService {
     public void remove(final String serverName, final String userName){
         entityManager.createQuery(
             "DELETE FROM Server AS server" +
-                "WHERE server.name = :serverName AND server.user.login = :userName")
+                " WHERE server.name = :serverName AND server.user.login = :userName")
             .setParameter("serverName", serverName)
             .setParameter("userName", userName)
             .executeUpdate();
@@ -85,24 +129,5 @@ public class ServerService {
     @Deprecated
     public Server find(final Long id) {
         return entityManager.find(Server.class, id);
-    }
-
-    @Deprecated
-    public boolean remove(final String userName, final Long id) {
-        int amount = entityManager.createQuery("delete from Server as s where s.user.login = :user AND s.id = :id")
-            .setParameter("id", id)
-            .setParameter("user", userName)
-            .executeUpdate();
-
-        return amount > 0;
-    }
-
-    @Deprecated
-    public boolean remove(final String userName) {
-        int amount = entityManager.createQuery("delete from Server as s where s.user.login = :user")
-            .setParameter("user", userName)
-            .executeUpdate();
-
-        return amount > 0;
     }
 }

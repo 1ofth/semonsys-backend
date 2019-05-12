@@ -54,7 +54,7 @@ public class CompositeDataController {
 
         Server server = serverService.find(securityContext.getUserPrincipal().getName(), serverName);
 
-        if(server == null){
+        if(server == null || !server.getActivated()){
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
@@ -88,7 +88,7 @@ public class CompositeDataController {
 
         Server server = serverService.find(securityContext.getUserPrincipal().getName(), serverName);
 
-        if (server == null) {
+        if(server == null || !server.getActivated()){
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
@@ -118,17 +118,16 @@ public class CompositeDataController {
 
         Server server = serverService.find(securityContext.getUserPrincipal().getName(), serverName);
 
-        if(server == null){
+        if(server == null || !server.getActivated()){
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
+
 
         try {
             agentDataGetter.updateData(server);
         } catch (RemoteException | NotBoundException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
-
-        //return Response.ok().build();
 
         Set<ParamTO> list = compositeDataService.findAllParamsFromTimeWithIdentifier(dataGroupName, dataTypeName, server.getId(), time, identifier);
 

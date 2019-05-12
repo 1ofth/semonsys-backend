@@ -1,9 +1,9 @@
 package com.semonsys.server.model.dto;
 
 import com.google.gson.annotations.SerializedName;
+import com.semonsys.server.model.dao.Server;
 
 public class ServerTO {
-    private long id = 0;
     @SerializedName(value = "n")
     private String name = "";
     @SerializedName(value = "d")
@@ -16,14 +16,6 @@ public class ServerTO {
     private boolean activated = false;
 
     public ServerTO() {}
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;
@@ -63,5 +55,17 @@ public class ServerTO {
 
     public void setActivated(boolean activated) {
         this.activated = activated;
+    }
+
+    public static ServerTO convert(final Server server){
+        ServerTO serverTO = new ServerTO();
+
+        serverTO.setActivated(server.getActivated());
+        serverTO.setDescription(server.getDescription());
+        serverTO.setName(server.getName());
+        serverTO.setPort(server.getPort());
+        serverTO.setIp(server.getIp());
+
+        return serverTO;
     }
 }

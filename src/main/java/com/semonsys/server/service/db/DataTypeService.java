@@ -43,9 +43,13 @@ public class DataTypeService {
     }
 
     public DataType findByName(final String typeName) {
-        return entityManager.createQuery("SELECT dt FROM DataType AS dt WHERE dt.name = :name", DataType.class)
-            .setParameter("name", typeName)
-            .getSingleResult();
+        try {
+            return entityManager.createQuery("SELECT dt FROM DataType AS dt WHERE dt.name = :name", DataType.class)
+                .setParameter("name", typeName)
+                .getSingleResult();
+        } catch (NoResultException e){
+            return null;
+        }
     }
 
     public void save(final DataType dataType) {

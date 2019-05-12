@@ -54,7 +54,7 @@ public class SingleDataController {
 
         Server server = serverService.find(securityContext.getUserPrincipal().getName(), serverName);
 
-        if(server == null){
+        if(server == null || !server.getActivated()){
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
@@ -83,7 +83,7 @@ public class SingleDataController {
 
         Server server = serverService.find(securityContext.getUserPrincipal().getName(), serverName);
 
-        if(server == null){
+        if(server == null || !server.getActivated()){
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 

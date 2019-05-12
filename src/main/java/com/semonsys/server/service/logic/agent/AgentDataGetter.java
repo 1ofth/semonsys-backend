@@ -39,8 +39,7 @@ public class AgentDataGetter {
     @EJB
     private DataGroupService dataGroupService;
 
-
-    public String test(final long serverId) throws RemoteException, NotBoundException, MalformedURLException {
+    public String test(final long serverId) throws RemoteException, NotBoundException {
         Server server = serverService.find(serverId);
 
         if (server == null) {
