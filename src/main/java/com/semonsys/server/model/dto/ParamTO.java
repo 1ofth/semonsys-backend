@@ -12,13 +12,30 @@ public class ParamTO {
     @SerializedName(value = "t")
     private long time = 0;
 
-    public ParamTO() {}
+    public ParamTO() {
+    }
+
+    public static ParamTO convert(final Param data, final long time) {
+        ParamTO param = new ParamTO();
+
+        param.setTime(time);
+
+        if (data.getLongValue() != null) {
+            param.setValue(data.getLongValue().toString());
+        } else if (data.getDoubleValue() != null) {
+            param.setValue(data.getDoubleValue().toString());
+        } else if (data.getStringValue() != null) {
+            param.setValue(data.getStringValue());
+        }
+
+        return param;
+    }
 
     public String getValue() {
         return value;
     }
 
-    public void setValue(String v) {
+    public void setValue(final String v) {
         this.value = v;
     }
 
@@ -26,33 +43,23 @@ public class ParamTO {
         return time;
     }
 
-    public void setTime(long t) {
+    public void setTime(final long t) {
         this.time = t;
     }
 
-    public static ParamTO convert(final Param data, final long time){
-        ParamTO param = new ParamTO();
-
-        param.setTime(time);
-
-        if(data.getLongValue() != null) {
-            param.setValue(data.getLongValue().toString());
-        } else if(data.getDoubleValue() != null){
-            param.setValue(data.getDoubleValue().toString());
-        } else if(data.getStringValue() != null){
-            param.setValue(data.getStringValue());
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
         }
 
-        return param;
-    }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
         ParamTO param = (ParamTO) o;
-        return time == param.time &&
-            value.equals(param.value);
+        return time == param.time
+            && value.equals(param.value);
     }
 
     @Override

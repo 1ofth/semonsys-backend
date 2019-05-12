@@ -1,6 +1,8 @@
 package com.semonsys.server.controller;
 
-class PathHolder {
+final class PathHolder {
+    private PathHolder() { }
+
     static final String SERVER_PATH = "/rest/secured/server";
     static final String SERVER_ACTIVATION_PATH = "/rest/secured/server/activate";
     static final String SERVER_ACTIVATED_PATH = "/rest/secured/server/activated";

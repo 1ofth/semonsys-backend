@@ -4,13 +4,11 @@ import com.google.gson.Gson;
 import com.semonsys.server.model.dao.DataGroup;
 import com.semonsys.server.model.dto.DataGroupTO;
 import com.semonsys.server.service.db.DataGroupService;
-import com.semonsys.server.service.logic.DataGroupControllerLogic;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,11 +22,11 @@ public class DataGroupController {
 
     // returns all data groups objects
     @GET
-    public Response get(){
+    public Response get() {
         List<DataGroupTO> result = new ArrayList<>();
         List<DataGroup> list = dataGroupService.find();
 
-        for(DataGroup dataGroup : list) {
+        for (DataGroup dataGroup : list) {
             DataGroupTO dataGroupTO = new DataGroupTO();
 
             dataGroupTO.setDescription(dataGroup.getDescription());

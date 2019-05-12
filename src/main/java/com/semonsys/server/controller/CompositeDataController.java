@@ -21,7 +21,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -47,14 +46,14 @@ public class CompositeDataController {
     @Path("/identifiers")
     @Interceptors(MethodParamsInterceptor.class)
     public Response getIdentifiers(@QueryParam("group") final String groupName,
-                                   @QueryParam("server") final String serverName){
-        if(groupName == null || serverName == null){
+                                   @QueryParam("server") final String serverName) {
+        if (groupName == null || serverName == null) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
         Server server = serverService.find(securityContext.getUserPrincipal().getName(), serverName);
 
-        if(server == null || !server.getActivated()){
+        if (server == null || !server.getActivated()) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
@@ -67,7 +66,7 @@ public class CompositeDataController {
         Set<String> list = compositeDataService.findIdentifiers(server.getId(), groupName);
         Set<IdentifierTO> result = new HashSet<>();
 
-        for(String s : list){
+        for (String s : list) {
             IdentifierTO identifier = new IdentifierTO();
             identifier.setValue(s);
             result.add(identifier);
@@ -88,7 +87,7 @@ public class CompositeDataController {
 
         Server server = serverService.find(securityContext.getUserPrincipal().getName(), serverName);
 
-        if(server == null || !server.getActivated()){
+        if (server == null || !server.getActivated()) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
@@ -110,15 +109,15 @@ public class CompositeDataController {
                               @QueryParam("group") final String dataGroupName,
                               @QueryParam("type") final String dataTypeName,
                               @QueryParam("time") final Long time,
-                              @QueryParam("identifier") final String identifier){
+                              @QueryParam("identifier") final String identifier) {
 
-        if(serverName == null || dataGroupName == null || dataTypeName == null || time == null || identifier == null){
+        if (serverName == null || dataGroupName == null || dataTypeName == null || time == null || identifier == null) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
         Server server = serverService.find(securityContext.getUserPrincipal().getName(), serverName);
 
-        if(server == null || !server.getActivated()){
+        if (server == null || !server.getActivated()) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 

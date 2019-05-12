@@ -21,7 +21,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.util.List;
 import java.util.Set;
 
 @Log4j
@@ -47,14 +46,14 @@ public class SingleDataController {
     @Path("/last")
     @Interceptors(MethodParamsInterceptor.class)
     public Response getLastAll(@QueryParam("group") final String groupName,
-                               @QueryParam("server") final String serverName){
-        if(groupName == null || serverName == null){
+                               @QueryParam("server") final String serverName) {
+        if (groupName == null || serverName == null) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
         Server server = serverService.find(securityContext.getUserPrincipal().getName(), serverName);
 
-        if(server == null || !server.getActivated()){
+        if (server == null || !server.getActivated()) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
@@ -75,15 +74,15 @@ public class SingleDataController {
     public Response getSeries(@QueryParam("server") final String serverName,
                               @QueryParam("group") final String dataGroupName,
                               @QueryParam("type") final String dataTypeName,
-                              @QueryParam("time") final Long time){
+                              @QueryParam("time") final Long time) {
 
-        if(serverName == null || dataGroupName == null || dataTypeName == null || time == null){
+        if (serverName == null || dataGroupName == null || dataTypeName == null || time == null) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
         Server server = serverService.find(securityContext.getUserPrincipal().getName(), serverName);
 
-        if(server == null || !server.getActivated()){
+        if (server == null || !server.getActivated()) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 

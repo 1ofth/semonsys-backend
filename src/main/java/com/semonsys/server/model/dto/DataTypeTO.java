@@ -11,33 +11,10 @@ public class DataTypeTO {
     @SerializedName(value = "m")
     private Boolean monitoring = false;
 
-    public DataTypeTO() {}
-
-    public String getName() {
-        return name;
+    public DataTypeTO() {
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Boolean getMonitoring() {
-        return monitoring;
-    }
-
-    public void setMonitoring(Boolean monitoring) {
-        this.monitoring = monitoring;
-    }
-
-    public static DataTypeTO convert(DataType object){
+    public static DataTypeTO convert(final DataType object) {
         DataTypeTO dataTypeTO = new DataTypeTO();
 
         dataTypeTO.setDescription(object.getDescription());
@@ -45,5 +22,29 @@ public class DataTypeTO {
         dataTypeTO.setMonitoring(object.getMonitoring());
 
         return dataTypeTO;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(final String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(final String description) {
+        this.description = description;
+    }
+
+    public Boolean getMonitoring() {
+        return monitoring;
+    }
+
+    public void setMonitoring(final Boolean monitoring) {
+        this.monitoring = monitoring;
     }
 }

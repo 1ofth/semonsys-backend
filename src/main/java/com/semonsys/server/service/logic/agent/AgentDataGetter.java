@@ -1,8 +1,17 @@
 package com.semonsys.server.service.logic.agent;
 
 import com.semonsys.server.interceptor.MethodParamsInterceptor;
-import com.semonsys.server.model.dao.*;
-import com.semonsys.server.service.db.*;
+import com.semonsys.server.model.dao.CompositeData;
+import com.semonsys.server.model.dao.DataGroup;
+import com.semonsys.server.model.dao.DataType;
+import com.semonsys.server.model.dao.Param;
+import com.semonsys.server.model.dao.Server;
+import com.semonsys.server.model.dao.SingleData;
+import com.semonsys.server.service.db.CompositeDataService;
+import com.semonsys.server.service.db.DataGroupService;
+import com.semonsys.server.service.db.DataTypeService;
+import com.semonsys.server.service.db.ServerService;
+import com.semonsys.server.service.db.SingleDataService;
 import com.semonsys.shared.AgentSingleData;
 import com.semonsys.shared.RemoteCommands;
 import lombok.extern.log4j.Log4j;
@@ -10,7 +19,6 @@ import lombok.extern.log4j.Log4j;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
-import java.net.MalformedURLException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -23,6 +31,7 @@ import java.util.Map;
 @Stateless
 @Log4j
 public class AgentDataGetter {
+    private static final long TIME_DIFFERENCE = 1000;
 
     @EJB
     private SingleDataService singleDataService;
@@ -81,27 +90,22 @@ public class AgentDataGetter {
 
         long maxTime = 0;
 
-        for(AgentSingleData data : dataFromAgent){
-            if(data.getTime() > maxTime){
+        for (AgentSingleData data : dataFromAgent) {
+            if (data.getTime() > maxTime) {
                 maxTime = data.getTime();
             }
 
-            if(data.getCompositeDataIdentifier() != null){
+            if (data.getCompositeDataIdentifier() != null) {
                 compositeData.add(data);
             } else {
                 singleData.add(data);
             }
         }
 
-        dataFromAgent = null;
-
-
-
         List<SingleData> singleDataList = convertToSingleData(singleData, server);
         singleDataService.save(singleDataList);
 
         log.info(singleDataList.size() + " SingleData objects were saved to db");
-
 
 
         List<CompositeData> compositeDataList = convertToCompositeData(compositeData, server);
@@ -117,18 +121,17 @@ public class AgentDataGetter {
     }
 
 
-
-    private SingleData convertToSingleData(final AgentSingleData data, final Server server){
+    private SingleData convertToSingleData(final AgentSingleData data, final Server server) {
         SingleData singleData = new SingleData();
 
         DataType dataType = dataTypeService.findByName(data.getDataTypeName());
-        if(dataType == null){
+        if (dataType == null) {
             log.warn("Data type witn name " + data.getDataTypeName() + " was not found!");
             return null;
         }
 
         DataGroup dataGroup = dataGroupService.find(data.getGroupName());
-        if (dataGroup == null){
+        if (dataGroup == null) {
             log.warn("Data group with name " + data.getGroupName() + " was not found!");
             return null;
         }
@@ -139,12 +142,12 @@ public class AgentDataGetter {
         singleData.setTime(data.getTime());
 
         Param param = new Param();
-        if(data.getType() == com.semonsys.shared.DataType.STRING){
-            param.setStringValue( (String) data.getValue());
-        } else if(data.getType() == com.semonsys.shared.DataType.LONG){
-            param.setLongValue( (Long) data.getValue());
-        } else if(data.getType() == com.semonsys.shared.DataType.DOUBLE){
-            param.setDoubleValue( (Double)data.getValue() );
+        if (data.getType() == com.semonsys.shared.DataType.STRING) {
+            param.setStringValue((String) data.getValue());
+        } else if (data.getType() == com.semonsys.shared.DataType.LONG) {
+            param.setLongValue((Long) data.getValue());
+        } else if (data.getType() == com.semonsys.shared.DataType.DOUBLE) {
+            param.setDoubleValue((Double) data.getValue());
         } else {
             return null;
         }
@@ -154,12 +157,12 @@ public class AgentDataGetter {
         return singleData;
     }
 
-    private List<SingleData> convertToSingleData(final List<AgentSingleData> data, final Server server){
+    private List<SingleData> convertToSingleData(final List<AgentSingleData> data, final Server server) {
         List<SingleData> list = new ArrayList<>();
 
-        for(AgentSingleData temp : data){
+        for (AgentSingleData temp : data) {
             SingleData singleData = convertToSingleData(temp, server);
-            if(singleData != null) {
+            if (singleData != null) {
                 list.add(singleData);
             }
         }
@@ -167,12 +170,12 @@ public class AgentDataGetter {
         return list;
     }
 
-    private List<CompositeData> convertToCompositeData(final List<AgentSingleData> list, final Server server){
+    private List<CompositeData> convertToCompositeData(final List<AgentSingleData> list, final Server server) {
         Map<String, List<AgentSingleData>> filteredData = new HashMap<>();
 
         // sort data by identifier
-        for(AgentSingleData data : list){
-            if(filteredData.containsKey(data.getCompositeDataIdentifier())){
+        for (AgentSingleData data : list) {
+            if (filteredData.containsKey(data.getCompositeDataIdentifier())) {
                 filteredData.get(data.getCompositeDataIdentifier()).add(data);
             } else {
                 List<AgentSingleData> temp = new ArrayList<>();
@@ -185,14 +188,13 @@ public class AgentDataGetter {
 
         filteredData.forEach((key, value) -> {
             long lastTime = 0;
-            final long TIME_DIFFERENCE = 1000;
 
             CompositeData tempCompositeData = null;
             List<SingleData> tempSingleDataList = null;
 
             for (AgentSingleData data : value) {
 
-                if(lastTime == 0){
+                if (lastTime == 0) {
                     lastTime = data.getTime();
                 }
 
@@ -215,7 +217,7 @@ public class AgentDataGetter {
                 }
 
                 SingleData singleData = convertToSingleData(data, server);
-                if(singleData != null) {
+                if (singleData != null) {
                     singleData.setCompositeData(tempCompositeData);
                     tempSingleDataList.add(singleData);
                 }

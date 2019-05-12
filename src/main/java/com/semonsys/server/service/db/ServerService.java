@@ -6,7 +6,6 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +18,7 @@ public class ServerService {
 
     // saves server only when there is no server with the same name for given user
     public boolean save(final Server server) {
-        if(find(server.getUser().getLogin(), server.getName()) == null){
+        if (find(server.getUser().getLogin(), server.getName()) == null) {
             entityManager.persist(server);
             return true;
         }
@@ -38,14 +37,14 @@ public class ServerService {
         }
     }
 
-    public List<Server> findActivated(final String userName){
+    public List<Server> findActivated(final String userName) {
         try {
             return entityManager.createQuery(
-                "select s " +
-                    "from Server as s " +
-                    "where " +
-                    "   s.user.login = :userLogin" +
-                    "   AND s.activated = true", Server.class)
+                "select s "
+                    + "from Server as s "
+                    + "where "
+                    + "   s.user.login = :userLogin"
+                    + "   AND s.activated = true", Server.class)
                 .setParameter("userLogin", userName)
                 .getResultList();
         } catch (NoResultException n) {
@@ -53,28 +52,28 @@ public class ServerService {
         }
     }
 
-    public boolean existServerWithSameIpAndPort(final String ip, final int port){
-        try{
+    public boolean existServerWithSameIpAndPort(final String ip, final int port) {
+        try {
             Server server = entityManager.createQuery(
-                "SELECT " +
-                    "   s " +
-                    "FROM " +
-                    "   Server AS s " +
-                    "WHERE " +
-                    "   s.ip = :ip " +
-                    "   AND s.port = :port " +
-                    "   AND s.activated = true ",
+                "SELECT "
+                    + "   s "
+                    + "FROM "
+                    + "   Server AS s "
+                    + "WHERE "
+                    + "   s.ip = :ip "
+                    + "   AND s.port = :port "
+                    + "   AND s.activated = true ",
                 Server.class
             )
                 .setParameter("ip", ip)
                 .setParameter("port", port)
                 .getSingleResult();
 
-            if(server != null){
+            if (server != null) {
                 return true;
             }
 
-        } catch (NoResultException e){
+        } catch (NoResultException e) {
             return false;
         }
 
@@ -84,23 +83,23 @@ public class ServerService {
     public Server find(final String userName, final String serverName) {
         try {
             return entityManager.createQuery(
-                "SELECT server " +
-                    "FROM Server AS server " +
-                    "WHERE server.name = :serverName AND server.user.login = :userName", Server.class)
+                "SELECT server "
+                    + "FROM Server AS server "
+                    + "WHERE server.name = :serverName AND server.user.login = :userName", Server.class)
                 .setParameter("serverName", serverName)
                 .setParameter("userName", userName)
                 .getSingleResult();
 
-        } catch (NoResultException e){
+        } catch (NoResultException e) {
             return null;
         }
     }
 
-    public List<Server> find(){
-        try{
+    public List<Server> find() {
+        try {
             return entityManager.createQuery("SELECT s FROM Server AS s", Server.class)
                 .getResultList();
-        } catch (NoResultException e){
+        } catch (NoResultException e) {
             return new ArrayList<>();
         }
     }
@@ -110,20 +109,14 @@ public class ServerService {
     }
 
 
-    public void remove(final String serverName, final String userName){
+    public void remove(final String serverName, final String userName) {
         entityManager.createQuery(
-            "DELETE FROM Server AS server" +
-                " WHERE server.name = :serverName AND server.user.login = :userName")
+            "DELETE FROM Server AS server"
+                + " WHERE server.name = :serverName AND server.user.login = :userName")
             .setParameter("serverName", serverName)
             .setParameter("userName", userName)
             .executeUpdate();
     }
-
-
-
-
-
-
 
 
     @Deprecated

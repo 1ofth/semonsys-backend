@@ -39,7 +39,7 @@ public class DataTypeController {
         List<DataType> list = dataTypeService.findWithDefault(securityContext.getUserPrincipal().getName());
 
         List<DataTypeTO> result = new ArrayList<>();
-        for(DataType dataType : list){
+        for (DataType dataType : list) {
             result.add(DataTypeTO.convert(dataType));
         }
 

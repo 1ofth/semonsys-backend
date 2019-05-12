@@ -2,12 +2,10 @@ package com.semonsys.server.service.db;
 
 import com.semonsys.server.interceptor.MethodParamsInterceptor;
 import com.semonsys.server.model.dao.CompositeData;
-import com.semonsys.server.model.dao.SingleData;
 import com.semonsys.server.model.dto.ParamTO;
 import com.semonsys.server.model.dto.SingleDataTO;
 import lombok.extern.log4j.Log4j;
 
-import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
 import javax.persistence.EntityManager;
@@ -27,71 +25,73 @@ public class CompositeDataService {
     @PersistenceContext(unitName = "provider")
     private EntityManager entityManager;
 
-    public CompositeData find(final long id) {return entityManager.find(CompositeData.class, id);}
+    public CompositeData find(final long id) {
+        return entityManager.find(CompositeData.class, id);
+    }
 
     @Transactional
-    public void save(CompositeData compositeData){
+    public void save(final CompositeData compositeData) {
         entityManager.persist(compositeData);
     }
 
     @Transactional
-    public void save(List<CompositeData> compositeData){
-        for(CompositeData data : compositeData){
-               entityManager.persist(data);
+    public void save(final List<CompositeData> compositeData) {
+        for (CompositeData data : compositeData) {
+            entityManager.persist(data);
         }
     }
 
     @Interceptors(MethodParamsInterceptor.class)
     public List<SingleDataTO> findLastSingleDataListWithIdentifier(final String dataGroupName,
                                                                    final long serverId,
-                                                                   final String identifier){
+                                                                   final String identifier) {
         List<SingleDataTO> list = new ArrayList<>();
 
-        String query = "SELECT \n" +
-            "    dt.name,\n" +
-            "    data.time,\n" +
-            "    param.int_value,\n" +
-            "    param.float_value,\n" +
-            "    param.text_value\n" +
-            "FROM\n" +
-            "    data_type AS dt\n" +
-            "    JOIN data\n" +
-            "        ON(dt.id = data.data_type_id)\n" +
-            "    JOIN param\n" +
-            "        ON(data.param_id = param.id)\n" +
-            "    JOIN data_group\n" +
-            "        ON(data.data_group_id = data_group.id)\n" +
-            "    JOIN composite_data" +
-            "        ON(composite_data.id = data.comp_id)" +
-            "WHERE\n" +
-            "    data.time = (\n" +
-            "        SELECT \n" +
-            "            MAX(data.time) \n" +
-            "        FROM \n" +
-            "            data\n" +
-            "            JOIN data_type AS dt_inner\n" +
-            "                ON(data.data_type_id = dt_inner.id)\n" +
-            "        WHERE " +
-            "            dt.id = dt_inner.id\n" +
-            "            AND data.comp_id is not null \n" +
-            "        )\n" +
-            "    AND data_group.name = :groupName\n" +
-            "    AND data.server_id = :serverId" +
-            "    AND composite_data.identifier = :identifier";
+        String query = "SELECT \n"
+            + "    dt.name,\n"
+            + "    data.time,\n"
+            + "    param.int_value,\n"
+            + "    param.float_value,\n"
+            + "    param.text_value\n"
+            + "FROM\n"
+            + "    data_type AS dt\n"
+            + "    JOIN data\n"
+            + "        ON(dt.id = data.data_type_id)\n"
+            + "    JOIN param\n"
+            + "        ON(data.param_id = param.id)\n"
+            + "    JOIN data_group\n"
+            + "        ON(data.data_group_id = data_group.id)\n"
+            + "    JOIN composite_data"
+            + "        ON(composite_data.id = data.comp_id)"
+            + "WHERE\n"
+            + "    data.time = (\n"
+            + "        SELECT \n"
+            + "            MAX(data.time) \n"
+            + "        FROM \n"
+            + "            data\n"
+            + "            JOIN data_type AS dt_inner\n"
+            + "                ON(data.data_type_id = dt_inner.id)\n"
+            + "        WHERE "
+            + "            dt.id = dt_inner.id\n"
+            + "            AND data.comp_id is not null \n"
+            + "        )\n"
+            + "    AND data_group.name = :groupName\n"
+            + "    AND data.server_id = :serverId"
+            + "    AND composite_data.identifier = :identifier";
 
         List<Object[]> temp;
 
-        try{
+        try {
             temp = (List<Object[]>) entityManager.createNativeQuery(query)
                 .setParameter("identifier", identifier)
                 .setParameter("groupName", dataGroupName)
                 .setParameter("serverId", serverId)
                 .getResultList();
-        } catch (NoResultException e){
+        } catch (NoResultException e) {
             return list;
         }
 
-        for(Object[] object : temp){
+        for (Object[] object : temp) {
             SingleDataTO singleData = Converter.convertToSingleDataTO(object);
             list.add(singleData);
         }
@@ -105,34 +105,34 @@ public class CompositeDataService {
                                                             final String type,
                                                             final long serverId,
                                                             final long time,
-                                                            final String identifier){
-        String query = "SELECT \n" +
-            "    data.time,\n" +
-            "    param.int_value,\n" +
-            "    param.float_value,\n" +
-            "    param.text_value\n" +
-            "FROM\n" +
-            "    data_type\n" +
-            "    JOIN data\n" +
-            "        ON(data_type.id = data.data_type_id)\n" +
-            "    JOIN param\n" +
-            "        ON(data.param_id = param.id)\n" +
-            "    JOIN data_group\n" +
-            "        ON(data.data_group_id = data_group.id)\n" +
-            "    JOIN composite_data" +
-            "        ON(data.comp_id = composite_data.id)" +
-            "WHERE\n" +
-            "    data.server_id = :server\n" +
-            "    AND data_group.name = :group\n" +
-            "    AND data.time > :time\n" +
-            "    AND data_type.name = :type\n" +
-            "    AND composite_data.identifier = :identifier";
+                                                            final String identifier) {
+        String query = "SELECT \n"
+            + "    data.time,\n"
+            + "    param.int_value,\n"
+            + "    param.float_value,\n"
+            + "    param.text_value\n"
+            + "FROM\n"
+            + "    data_type\n"
+            + "    JOIN data\n"
+            + "        ON(data_type.id = data.data_type_id)\n"
+            + "    JOIN param\n"
+            + "        ON(data.param_id = param.id)\n"
+            + "    JOIN data_group\n"
+            + "        ON(data.data_group_id = data_group.id)\n"
+            + "    JOIN composite_data"
+            + "        ON(data.comp_id = composite_data.id)"
+            + "WHERE\n"
+            + "    data.server_id = :server\n"
+            + "    AND data_group.name = :group\n"
+            + "    AND data.time > :time\n"
+            + "    AND data_type.name = :type\n"
+            + "    AND composite_data.identifier = :identifier";
 
         Set<ParamTO> list = new HashSet<>();
 
         List<Object[]> temp;
 
-        try{
+        try {
             temp = (List<Object[]>) entityManager.createNativeQuery(query)
                 .setParameter("identifier", identifier)
                 .setParameter("group", group)
@@ -141,11 +141,11 @@ public class CompositeDataService {
                 .setParameter("time", time)
                 .getResultList();
 
-        } catch (NoResultException e){
+        } catch (NoResultException e) {
             return list;
         }
 
-        for(Object[] object : temp){
+        for (Object[] object : temp) {
             list.add(Converter.convertToParamTO(object));
         }
 
@@ -182,24 +182,24 @@ public class CompositeDataService {
 
 
     @Interceptors(MethodParamsInterceptor.class)
-    public long getMaxTime(){
+    public long getMaxTime() {
         BigInteger temp;
-        try{
+        try {
             temp = (BigInteger) entityManager.createNativeQuery(
-                "SELECT " +
-                    "   MAX(time) " +
-                    "FROM " +
-                    "   data " +
-                    "WHERE " +
-                    "   data.comp_id is not null")
+                "SELECT "
+                    + "   MAX(time) "
+                    + "FROM "
+                    + "   data "
+                    + "WHERE "
+                    + "   data.comp_id is not null")
                 .getSingleResult();
 
-        } catch (NoResultException e){
+        } catch (NoResultException e) {
             return 0L;
         }
 
-        if(temp != null) {
-            return (temp).longValue();
+        if (temp != null) {
+            return temp.longValue();
         } else {
             return 0L;
         }

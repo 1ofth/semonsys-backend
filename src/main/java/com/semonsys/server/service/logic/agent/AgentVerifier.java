@@ -19,10 +19,10 @@ public class AgentVerifier {
     @EJB
     private ServerService serverService;
 
-    public boolean checkAgent(final Server server){
-        if(!server.getActivated()) {
+    public boolean checkAgent(final Server server) {
+        if (!server.getActivated()) {
 
-            if(!checkIpAndPort(server)) {
+            if (!checkIpAndPort(server)) {
                 return checkConnection(server);
             } else {
                 return false;
@@ -33,11 +33,11 @@ public class AgentVerifier {
         }
     }
 
-    private boolean checkIpAndPort(final Server server){
+    private boolean checkIpAndPort(final Server server) {
         return serverService.existServerWithSameIpAndPort(server.getIp(), server.getPort());
     }
 
-    private boolean checkConnection(final Server server){
+    private boolean checkConnection(final Server server) {
         try {
             Registry registry = LocateRegistry.getRegistry(server.getIp(), server.getPort());
             RemoteCommands stub = (RemoteCommands) registry.lookup("RemoteCommands");

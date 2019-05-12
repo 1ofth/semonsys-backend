@@ -13,33 +13,10 @@ public class SingleDataTO {
     @SerializedName(value = "m")
     private boolean monitoring = true;
 
-    public SingleDataTO() {}
-
-    public String getType(){
-        return type;
+    public SingleDataTO() {
     }
 
-    public void setType(final String type){
-        this.type = type;
-    }
-
-    public ParamTO getParam(){
-        return param;
-    }
-
-    public void setParam(final ParamTO param){
-        this.param = param;
-    }
-
-    public boolean isMonitoring() {
-        return monitoring;
-    }
-
-    public void setMonitoring(final boolean monitoring) {
-        this.monitoring = monitoring;
-    }
-
-    public static SingleDataTO convert(SingleData data){
+    public static SingleDataTO convert(final SingleData data) {
         SingleDataTO singleDataTO = new SingleDataTO();
 
         singleDataTO.setType(data.getDataType().getName());
@@ -52,14 +29,44 @@ public class SingleDataTO {
         return singleDataTO;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(final String type) {
+        this.type = type;
+    }
+
+    public ParamTO getParam() {
+        return param;
+    }
+
+    public void setParam(final ParamTO param) {
+        this.param = param;
+    }
+
+    public boolean isMonitoring() {
+        return monitoring;
+    }
+
+    public void setMonitoring(final boolean monitoring) {
+        this.monitoring = monitoring;
+    }
+
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
         SingleDataTO that = (SingleDataTO) o;
-        return monitoring == that.monitoring &&
-            param.equals(that.param) &&
-            type.equals(that.type);
+        return monitoring == that.monitoring
+            && param.equals(that.param)
+            && type.equals(that.type);
     }
 
     @Override

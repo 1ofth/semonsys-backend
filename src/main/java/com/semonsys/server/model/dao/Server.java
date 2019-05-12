@@ -17,6 +17,7 @@ import javax.persistence.Table;
 @Table(name = "server")
 @Data
 public class Server {
+    private static final int DEFAULT_PORT = 10_000;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "server_id_seq")
@@ -32,12 +33,13 @@ public class Server {
     private String name = "";
     private String description = "";
     private String ip = "";
-    private Integer port = 10_000;
+    private Integer port = DEFAULT_PORT;
 
 
     private Boolean activated = false;
     @Column(name = "act_data")
     private String activationData = "";
 
-    public Server() {}
+    public Server() {
+    }
 }

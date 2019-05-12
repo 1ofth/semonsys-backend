@@ -15,49 +15,10 @@ public class ServerTO {
     @SerializedName(value = "a")
     private boolean activated = false;
 
-    public ServerTO() {}
-
-    public String getName() {
-        return name;
+    public ServerTO() {
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getIp() {
-        return ip;
-    }
-
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
-
-    public int getPort() {
-        return port;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
-    }
-
-    public boolean isActivated() {
-        return activated;
-    }
-
-    public void setActivated(boolean activated) {
-        this.activated = activated;
-    }
-
-    public static ServerTO convert(final Server server){
+    public static ServerTO convert(final Server server) {
         ServerTO serverTO = new ServerTO();
 
         serverTO.setActivated(server.getActivated());
@@ -67,5 +28,45 @@ public class ServerTO {
         serverTO.setIp(server.getIp());
 
         return serverTO;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(final String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(final String description) {
+        this.description = description;
+    }
+
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(final String ip) {
+        this.ip = ip;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(final int port) {
+        this.port = port;
+    }
+
+    public boolean isActivated() {
+        return activated;
+    }
+
+    public void setActivated(final boolean activated) {
+        this.activated = activated;
     }
 }

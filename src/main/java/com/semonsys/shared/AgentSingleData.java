@@ -33,22 +33,22 @@ public class AgentSingleData implements Serializable {
     @Setter
     private String compositeDataIdentifier = null;
 
-    public void setValue(String value) {
+    public void setValue(final String value) {
         type = DataType.STRING;
         this.value = value;
     }
 
-    public void setValue(Long value) {
+    public void setValue(final Long value) {
         type = DataType.LONG;
         this.value = value;
     }
 
-    public void setValue(Double value) {
+    public void setValue(final Double value) {
         type = DataType.DOUBLE;
         this.value = value;
     }
 
-    public void setValue(List<AgentSingleData> value) {
+    public void setValue(final List<AgentSingleData> value) {
         type = DataType.LIST;
         this.value = value;
     }

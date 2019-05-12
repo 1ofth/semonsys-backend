@@ -8,12 +8,12 @@ import javax.interceptor.InvocationContext;
 @Log4j
 public class MethodParamsInterceptor {
     @AroundInvoke
-    private Object aroundMethod(InvocationContext context) throws Exception{
+    public Object aroundMethod(final InvocationContext context) throws Exception {
         int i = 1;
         log.info("Method '" + context.getMethod().getName() + "' was called with params");
-        for(Object o : context.getParameters()){
+        for (Object o : context.getParameters()) {
             log.info("param " + i + " [" + o + "]");
-            i+=1;
+            i += 1;
         }
 
         return context.proceed();

@@ -13,13 +13,30 @@ public class CompositeDataTO {
     @SerializedName(value = "d")
     private List<SingleDataTO> data;
 
-    public CompositeDataTO (){}
+    public CompositeDataTO() {
+    }
+
+    public static CompositeDataTO convert(final CompositeData data) {
+        CompositeDataTO compositeDataTO = new CompositeDataTO();
+
+        compositeDataTO.setIdentifier(data.getIdentifier());
+
+        List<SingleDataTO> list = new ArrayList<>();
+
+        for (SingleData singleData : data.getData()) {
+            list.add(SingleDataTO.convert(singleData));
+        }
+
+        compositeDataTO.setData(list);
+
+        return compositeDataTO;
+    }
 
     public String getIdentifier() {
         return identifier;
     }
 
-    public void setIdentifier(String identifier) {
+    public void setIdentifier(final String identifier) {
         this.identifier = identifier;
     }
 
@@ -27,25 +44,7 @@ public class CompositeDataTO {
         return data;
     }
 
-    public void setData(List<SingleDataTO> data) {
+    public void setData(final List<SingleDataTO> data) {
         this.data = data;
-    }
-
-
-
-    public static CompositeDataTO convert(CompositeData data){
-        CompositeDataTO compositeDataTO = new CompositeDataTO();
-
-        compositeDataTO.setIdentifier(data.getIdentifier());
-
-        List<SingleDataTO> list = new ArrayList<>();
-
-        for(SingleData singleData : data.getData()){
-            list.add(SingleDataTO.convert(singleData));
-        }
-
-        compositeDataTO.setData(list);
-
-        return compositeDataTO;
     }
 }

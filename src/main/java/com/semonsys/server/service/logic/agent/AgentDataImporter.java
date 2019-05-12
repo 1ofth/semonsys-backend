@@ -2,11 +2,13 @@ package com.semonsys.server.service.logic.agent;
 
 import com.semonsys.server.model.dao.Server;
 import com.semonsys.server.service.db.ServerService;
-import com.semonsys.server.service.logic.agent.AgentDataGetter;
 import lombok.extern.log4j.Log4j;
 
-import javax.ejb.*;
-import java.net.MalformedURLException;
+import javax.ejb.EJB;
+import javax.ejb.Lock;
+import javax.ejb.LockType;
+import javax.ejb.Schedule;
+import javax.ejb.Singleton;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.List;
@@ -34,7 +36,7 @@ public class AgentDataImporter {
 
         totalAmount = servers.size();
 
-        for(Server server : servers){
+        for (Server server : servers) {
             String userName;
             String serverName = "none";
             try {

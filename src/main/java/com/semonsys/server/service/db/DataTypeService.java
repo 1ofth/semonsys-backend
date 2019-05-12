@@ -47,7 +47,7 @@ public class DataTypeService {
             return entityManager.createQuery("SELECT dt FROM DataType AS dt WHERE dt.name = :name", DataType.class)
                 .setParameter("name", typeName)
                 .getSingleResult();
-        } catch (NoResultException e){
+        } catch (NoResultException e) {
             return null;
         }
     }

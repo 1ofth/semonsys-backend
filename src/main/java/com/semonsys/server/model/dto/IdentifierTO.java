@@ -6,13 +6,14 @@ public class IdentifierTO {
     @SerializedName(value = "n")
     private String value;
 
-    public IdentifierTO() {}
+    public IdentifierTO() {
+    }
 
     public String getValue() {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(final String value) {
         this.value = value;
     }
 }
