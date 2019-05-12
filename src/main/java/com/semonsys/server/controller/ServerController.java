@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Stateless
-@Path("/rest/secured/server")
+@Path(PathHolder.SERVER_PATH)
 public class ServerController {
 
     @Context
@@ -56,7 +56,7 @@ public class ServerController {
     }
 
     @GET
-    @Path("/activated")
+    @Path(PathHolder.SERVER_ACTIVATED_PATH)
     public Response getActivatedServers() {
         List<ServerTO> result = new ArrayList<>();
         List<Server> list = serverService.findActivated(securityContext.getUserPrincipal().getName());
@@ -69,7 +69,7 @@ public class ServerController {
     }
 
     @GET
-    @Path("/activate")
+    @Path(PathHolder.SERVER_ACTIVATION_PATH)
     public Response activateServer(@QueryParam("name") final String serverName) {
         if (serverName == null) {
             return Response.status(Response.Status.BAD_REQUEST).build();

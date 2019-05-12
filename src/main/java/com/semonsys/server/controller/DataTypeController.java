@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Stateless
-@Path("/rest/secured/data_type")
+@Path(PathHolder.DATA_TYPE_PATH)
 public class DataTypeController {
 
     @Context

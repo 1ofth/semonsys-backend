@@ -23,7 +23,7 @@ import java.text.ParseException;
 import java.util.Date;
 
 @Stateless
-@Path("/rest")
+@Path(PathHolder.AUTH_PATH)
 @Log
 public class AuthController {
 
@@ -40,14 +40,14 @@ public class AuthController {
     private TokensService tokensService;
 
     @POST
-    @Path("/secured/logout")
+    @Path(PathHolder.LOGOUT_PATH)
     public Response logout() {
         tokensService.clearRefreshTokens(securityContext.getUserPrincipal().getName());
         return Response.ok("{message: 'logged out'}").build();
     }
 
     @POST
-    @Path("/secured/refresh-tokens")
+    @Path(PathHolder.REFRESH_TOKENS_PATH)
     public Response refresh(@FormParam("refreshToken") final String refreshToken,
                             @Context final HttpServletResponse response) {
         User user = userService.find(securityContext.getUserPrincipal().getName());
@@ -66,7 +66,7 @@ public class AuthController {
 
     @Interceptors(MethodParamsInterceptor.class)
     @POST
-    @Path("/login")
+    @Path(PathHolder.LOGIN_PATH)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response login(@FormParam("login") final String login,
                           @FormParam("password") final String password,

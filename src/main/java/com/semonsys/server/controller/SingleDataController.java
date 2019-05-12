@@ -25,7 +25,7 @@ import java.util.Set;
 
 @Log4j
 @Stateless
-@Path("/rest/secured/data/sing")
+@Path(PathHolder.SINGLE_DATA_PATH)
 public class SingleDataController {
 
     @EJB
@@ -43,7 +43,7 @@ public class SingleDataController {
 
 
     @GET
-    @Path("/last")
+    @Path(PathHolder.SINGLE_DATA_LAST_PATH)
     @Interceptors(MethodParamsInterceptor.class)
     public Response getLastAll(@QueryParam("group") final String groupName,
                                @QueryParam("server") final String serverName) {
@@ -69,7 +69,7 @@ public class SingleDataController {
     }
 
     @GET
-    @Path("/series")
+    @Path(PathHolder.SINGLE_DATA_SERIES_PATH)
     @Interceptors(MethodParamsInterceptor.class)
     public Response getSeries(@QueryParam("server") final String serverName,
                               @QueryParam("group") final String dataGroupName,

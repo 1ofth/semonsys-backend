@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Stateless
-@Path("/rest/secured/group")
+@Path(PathHolder.DATA_GROUP_PATH)
 public class DataGroupController {
 
     @EJB

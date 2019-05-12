@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Set;
 
 @Stateless
-@Path("/rest/secured/data/comp")
+@Path(PathHolder.COMPOSITE_DATA_PATH)
 public class CompositeDataController {
 
     @EJB
@@ -43,7 +43,7 @@ public class CompositeDataController {
 
 
     @GET
-    @Path("/identifiers")
+    @Path(PathHolder.COMPOSITE_DATA_IDENTIFIERS_PATH)
     @Interceptors(MethodParamsInterceptor.class)
     public Response getIdentifiers(@QueryParam("group") final String groupName,
                                    @QueryParam("server") final String serverName) {
@@ -76,7 +76,7 @@ public class CompositeDataController {
     }
 
     @GET
-    @Path("/last")
+    @Path(PathHolder.COMPOSITE_DATA_LAST_PATH)
     @Interceptors(MethodParamsInterceptor.class)
     public Response getLastAll(@QueryParam("group") final String groupName,
                                @QueryParam("server") final String serverName,
@@ -103,7 +103,7 @@ public class CompositeDataController {
     }
 
     @GET
-    @Path("/series")
+    @Path(PathHolder.COMPOSITE_DATA_SERIES_PATH)
     @Interceptors(MethodParamsInterceptor.class)
     public Response getSeries(@QueryParam("server") final String serverName,
                               @QueryParam("group") final String dataGroupName,
