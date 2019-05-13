@@ -11,6 +11,7 @@ stages:
   - compile
   - analysis
   - test
+  - package
   - deploy
 
 compile:
@@ -58,7 +59,7 @@ test:
     - 'mvn $MAVEN_CLI_OPTS clean test'
 
 package:
-  stage: deploy
+  stage: package
   only:
     - master
   script:
@@ -66,3 +67,15 @@ package:
   artifacts:
     paths:
       - target/*.war
+
+deploy:
+  stage: deploy
+  environment: Staging
+  only:
+    - master
+  script:
+    - cd target/
+    - ls
+    - sshpass -V
+    - export SSHPASS=$CI_PASSWORD
+    - sshpass -e scp -o stricthostkeychecking=no -r *.war $CI_USERNAME@$CI_IP:$BE_HOME
