@@ -11,6 +11,7 @@ stages:
   - compile
   - analysis
   - test
+  - deploy
 
 compile:
   stage: compile
@@ -55,3 +56,13 @@ test:
     - master
   script:
     - 'mvn $MAVEN_CLI_OPTS clean test'
+
+package:
+  stage: deploy
+  only:
+    - master
+  script:
+    - 'mvn $MAVEN_CLI_OPTS clean package'
+  artifacts:
+    paths:
+      - target/*.war
