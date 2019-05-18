@@ -25,7 +25,10 @@ public class DataType {
 
     @Column(name = "user_login")
     private String userLogin;
+
+    @Column(unique = true)
     private String name;
+
     private String description;
     private Boolean monitoring;
 

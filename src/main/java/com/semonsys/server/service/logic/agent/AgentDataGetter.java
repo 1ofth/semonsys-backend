@@ -15,18 +15,17 @@ import com.semonsys.server.service.db.SingleDataService;
 import com.semonsys.shared.AgentSingleData;
 import com.semonsys.shared.RemoteCommands;
 import lombok.extern.log4j.Log4j;
+import org.postgresql.util.PSQLException;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
+import javax.transaction.Transactional;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Stateless
 @Log4j
@@ -90,7 +89,22 @@ public class AgentDataGetter {
 
         long maxTime = 0;
 
+        HashSet<String> dataTypeNames = new HashSet<>();
+        List<DataType> dataTypes= dataTypeService.find();
+        if(dataTypes != null){
+            dataTypes.forEach( type -> {
+                dataTypeNames.add(type.getName());
+            });
+        }
+
+
         for (AgentSingleData data : dataFromAgent) {
+
+            if(!dataTypeNames.contains(data.getDataTypeName())){
+                createNewDataType(data);
+                dataTypeNames.add(data.getDataTypeName());
+            }
+
             if (data.getTime() > maxTime) {
                 maxTime = data.getTime();
             }
@@ -121,26 +135,29 @@ public class AgentDataGetter {
     }
 
 
+    private void createNewDataType(final AgentSingleData data){
+        DataType type = new DataType();
+        type.setDescription("User data type");
+        if(data.getType() != com.semonsys.shared.DataType.STRING) {
+            type.setMonitoring(true);
+        } else {
+            type.setMonitoring(false);
+            type.setDescription("WAS STRING");
+        }
+
+        type.setName(data.getDataTypeName());
+
+        dataTypeService.save(type);
+    }
+
+
     private SingleData convertToSingleData(final AgentSingleData data, final Server server) {
         SingleData singleData = new SingleData();
 
         DataType dataType = dataTypeService.findByName(data.getDataTypeName());
         if (dataType == null) {
-
-            DataType type = new DataType();
-            type.setDescription("User data type");
-            if(data.getType() != com.semonsys.shared.DataType.STRING) {
-                type.setMonitoring(true);
-            }
-
-            type.setName(data.getDataTypeName());
-
-            dataTypeService.save(type);
-
-            dataType = type;
-
-            log.warn("Data type with name " + data.getDataTypeName() + " was not found!");
             log.info("That type was created!");
+            return null;
         }
 
         DataGroup dataGroup = dataGroupService.find(data.getGroupName());

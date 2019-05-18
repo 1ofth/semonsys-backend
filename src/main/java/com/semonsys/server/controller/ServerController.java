@@ -65,7 +65,7 @@ public class ServerController {
     @Path(PathHolder.SERVER_ACTIVATION_PATH)
     public Response activateServer(@QueryParam("name") final String serverName) {
         if (serverName == null) {
-            return Response.status(Response.Status.BAD_REQUEST).build();
+            return Response.status(Response.Status.BAD_REQUEST).entity("Parameters are incorrect").build();
         }
 
         Server server = serverService.find(securityContext.getUserPrincipal().getName(), serverName);
@@ -79,7 +79,7 @@ public class ServerController {
             serverService.update(server);
             return Response.ok().build();
         } else {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Agent was already created").build();
         }
     }
 
@@ -87,9 +87,11 @@ public class ServerController {
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response addServer(@FormParam("name") final String serverName,
-                              @FormParam("description") final String description) {
+                              @FormParam("description") final String description,
+                              @FormParam("port") final String port,
+                              @FormParam("ip") final String ip) {
         if (serverName == null || description == null) {
-            return Response.status(Response.Status.BAD_REQUEST).build();
+            return Response.status(Response.Status.BAD_REQUEST).entity("Parameters are incorrect").build();
         }
 
         User user = userService.find(securityContext.getUserPrincipal().getName());
@@ -102,6 +104,18 @@ public class ServerController {
         server.setDescription(description);
         server.setName(serverName);
         server.setUser(user);
+
+        if(ip != null){
+            server.setIp(ip);
+        }
+
+        if(port != null){
+            try {
+                server.setPort(Integer.parseInt(port));
+            } catch (NumberFormatException ignore) {
+                ;
+            }
+        }
 
         if (serverService.save(server)) {
             return Response.ok().build();
@@ -120,7 +134,7 @@ public class ServerController {
                                  @FormParam("port") final String port) {
 
         if (name == null || description == null && ip == null && port == null) {
-            return Response.status(Response.Status.BAD_REQUEST).build();
+            return Response.status(Response.Status.BAD_REQUEST).entity("Parameters are incorrect").build();
         }
 
         Server server = serverService.find(securityContext.getUserPrincipal().getName(), name);

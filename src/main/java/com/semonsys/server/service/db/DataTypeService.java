@@ -16,6 +16,14 @@ public class DataTypeService {
     @PersistenceContext(unitName = "provider")
     private EntityManager entityManager;
 
+    public List<DataType> find() {
+        try {
+            return entityManager.createQuery("SELECT dt FROM DataType AS dt", DataType.class).getResultList();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+
     public List<DataType> find(final String userLogin) {
         try {
             return entityManager.createQuery("SELECT dt FROM DataType AS dt WHERE dt.userLogin = :login", DataType.class)
