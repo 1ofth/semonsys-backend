@@ -126,8 +126,21 @@ public class AgentDataGetter {
 
         DataType dataType = dataTypeService.findByName(data.getDataTypeName());
         if (dataType == null) {
-            log.warn("Data type witn name " + data.getDataTypeName() + " was not found!");
-            return null;
+
+            DataType type = new DataType();
+            type.setDescription("User data type");
+            if(data.getType() != com.semonsys.shared.DataType.STRING) {
+                type.setMonitoring(true);
+            }
+
+            type.setName(data.getDataTypeName());
+
+            dataTypeService.save(type);
+
+            dataType = type;
+
+            log.warn("Data type with name " + data.getDataTypeName() + " was not found!");
+            log.info("That type was created!");
         }
 
         DataGroup dataGroup = dataGroupService.find(data.getGroupName());

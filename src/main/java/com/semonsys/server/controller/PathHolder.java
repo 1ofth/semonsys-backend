@@ -6,6 +6,7 @@ final class PathHolder {
     static final String SERVER_PATH = "/rest/secured/server";
     static final String SERVER_ACTIVATION_PATH = "/activate";
     static final String SERVER_ACTIVATED_PATH = "/activated";
+    static final String SERVER_DELETE_PATH = "/delete";
 
     static final String AUTH_PATH = "/rest";
     static final String LOGOUT_PATH = "/secured/logout";

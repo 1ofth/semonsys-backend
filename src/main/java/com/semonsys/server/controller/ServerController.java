@@ -10,14 +10,7 @@ import com.semonsys.server.service.logic.agent.AgentVerifier;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -156,13 +149,12 @@ public class ServerController {
 
     // deletes given server
     @DELETE
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response removeServer(@FormParam("name") final String name) {
-        if (name == null) {
-            return Response.status(Response.Status.BAD_REQUEST).build();
+    public Response removeServer(@QueryParam("name") final String serverName) {
+        if(serverName == null){
+            return Response.status(Response.Status.BAD_REQUEST).entity("name is null!").build();
         }
 
-        serverService.remove(name, securityContext.getUserPrincipal().getName());
+        serverService.remove(serverName, securityContext.getUserPrincipal().getName());
 
         return Response.ok().build();
     }

@@ -110,12 +110,13 @@ public class ServerService {
 
 
     public void remove(final String serverName, final String userName) {
-        entityManager.createQuery(
-            "DELETE FROM Server AS server"
-                + " WHERE server.name = :serverName AND server.user.login = :userName")
-            .setParameter("serverName", serverName)
-            .setParameter("userName", userName)
-            .executeUpdate();
+        Server server = find(userName, serverName);
+
+        if(server == null){
+            return;
+        }
+
+        entityManager.remove(server);
     }
 
 
