@@ -7,7 +7,7 @@ import java.util.List;
 public interface RemoteCommands extends Remote {
     String testConnection() throws RemoteException;
 
-    List<CompositeData> getData(Long timeFrom) throws RemoteException;
+    List<AgentSingleData> getData(Long timeFrom) throws RemoteException;
 
     void removeData(Long time) throws RemoteException;
 }

@@ -1,5 +1,5 @@
 package com.semonsys.shared;
 
 public enum DataType {
-    LONG, STRING, DOUBLE, LIST, NONE;
+    LONG, STRING, DOUBLE, LIST, NONE
 }

@@ -1,6 +1,6 @@
 package com.semonsys.server.controller;
 
-import com.semonsys.server.model.User;
+import com.semonsys.server.model.dao.User;
 import com.semonsys.server.service.db.UserService;
 import com.semonsys.server.service.logic.RegistrationService;
 import lombok.extern.java.Log;
@@ -19,7 +19,7 @@ import javax.ws.rs.core.SecurityContext;
 import java.util.ArrayList;
 
 @Stateless
-@Path("/rest")
+@Path(PathHolder.REGISTRATION_PATH)
 @Log
 public class RegistrationController {
     private static final int CREDENTIALS_MAX_LENGTH = 15;
@@ -33,7 +33,7 @@ public class RegistrationController {
     private UserService userService;
 
     @POST
-    @Path("/registration")
+    @Path(PathHolder.REGISTRATION_ENDPOINT_PATH)
     public Response registerNewUser(@FormParam("login") final String login,
                                     @FormParam("password") final String password,
                                     @FormParam("email") final String email,
@@ -58,7 +58,7 @@ public class RegistrationController {
     }
 
     @POST
-    @Path("/secured/activate")
+    @Path(PathHolder.ACTIVATE_ACCOUNT_PATH)
     public Response sendConfirmationEmail(@Context final HttpServletRequest request) {
         User user = userService.find(securityContext.getUserPrincipal().getName());
         if (user.getEmail() == null || user.getVerified()) {
@@ -70,7 +70,7 @@ public class RegistrationController {
     }
 
     @GET
-    @Path("/confirm/{token}")
+    @Path(PathHolder.CONFIRM_REGISTRATION_PATH + "{token}")
     public Response confirmRegistration(@PathParam("token") final String token) {
         User user = userService.findUserByToken(token);
         if (user == null || !user.getVerificationToken().equals(token)) {

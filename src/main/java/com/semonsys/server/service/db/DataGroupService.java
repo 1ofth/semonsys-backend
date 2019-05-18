@@ -1,6 +1,6 @@
 package com.semonsys.server.service.db;
 
-import com.semonsys.server.model.DataGroup;
+import com.semonsys.server.model.dao.DataGroup;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -28,9 +28,13 @@ public class DataGroupService {
     }
 
     public DataGroup find(final String name) {
-        return entityManager.createQuery("SELECT dg FROM DataGroup AS dg WHERE dg.name = :name", DataGroup.class)
-            .setParameter("name", name)
-            .getSingleResult();
+        try {
+            return entityManager.createQuery("SELECT dg FROM DataGroup AS dg WHERE dg.name = :name", DataGroup.class)
+                .setParameter("name", name)
+                .getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
 
