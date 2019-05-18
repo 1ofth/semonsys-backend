@@ -112,7 +112,7 @@ public class ServerService {
     public void remove(final String serverName, final String userName) {
         Server server = find(userName, serverName);
 
-        if(server == null){
+        if (server == null) {
             return;
         }
 

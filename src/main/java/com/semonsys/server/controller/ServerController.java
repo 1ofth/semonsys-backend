@@ -10,7 +10,14 @@ import com.semonsys.server.service.logic.agent.AgentVerifier;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -21,6 +28,8 @@ import java.util.List;
 @Stateless
 @Path(PathHolder.SERVER_PATH)
 public class ServerController {
+
+    private static final Integer DEFAULT_PORT = 10_000;
 
     @Context
     private SecurityContext securityContext;
@@ -105,15 +114,15 @@ public class ServerController {
         server.setName(serverName);
         server.setUser(user);
 
-        if(ip != null){
+        if (ip != null) {
             server.setIp(ip);
         }
 
-        if(port != null){
+        if (port != null) {
             try {
                 server.setPort(Integer.parseInt(port));
             } catch (NumberFormatException ignore) {
-                ;
+                server.setPort(DEFAULT_PORT);
             }
         }
 
@@ -164,7 +173,7 @@ public class ServerController {
     // deletes given server
     @DELETE
     public Response removeServer(@QueryParam("name") final String serverName) {
-        if(serverName == null){
+        if (serverName == null) {
             return Response.status(Response.Status.BAD_REQUEST).entity("name is null!").build();
         }
 

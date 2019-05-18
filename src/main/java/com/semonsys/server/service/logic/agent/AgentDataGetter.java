@@ -15,17 +15,19 @@ import com.semonsys.server.service.db.SingleDataService;
 import com.semonsys.shared.AgentSingleData;
 import com.semonsys.shared.RemoteCommands;
 import lombok.extern.log4j.Log4j;
-import org.postgresql.util.PSQLException;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
-import javax.transaction.Transactional;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 
 @Stateless
 @Log4j
@@ -90,9 +92,9 @@ public class AgentDataGetter {
         long maxTime = 0;
 
         HashSet<String> dataTypeNames = new HashSet<>();
-        List<DataType> dataTypes= dataTypeService.find();
-        if(dataTypes != null){
-            dataTypes.forEach( type -> {
+        List<DataType> dataTypes = dataTypeService.find();
+        if (dataTypes != null) {
+            dataTypes.forEach(type -> {
                 dataTypeNames.add(type.getName());
             });
         }
@@ -100,7 +102,7 @@ public class AgentDataGetter {
 
         for (AgentSingleData data : dataFromAgent) {
 
-            if(!dataTypeNames.contains(data.getDataTypeName())){
+            if (!dataTypeNames.contains(data.getDataTypeName())) {
                 createNewDataType(data);
                 dataTypeNames.add(data.getDataTypeName());
             }
@@ -135,10 +137,10 @@ public class AgentDataGetter {
     }
 
 
-    private void createNewDataType(final AgentSingleData data){
+    private void createNewDataType(final AgentSingleData data) {
         DataType type = new DataType();
         type.setDescription("User data type");
-        if(data.getType() != com.semonsys.shared.DataType.STRING) {
+        if (data.getType() != com.semonsys.shared.DataType.STRING) {
             type.setMonitoring(true);
         } else {
             type.setMonitoring(false);

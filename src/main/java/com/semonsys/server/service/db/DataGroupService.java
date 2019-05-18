@@ -32,7 +32,7 @@ public class DataGroupService {
             return entityManager.createQuery("SELECT dg FROM DataGroup AS dg WHERE dg.name = :name", DataGroup.class)
                 .setParameter("name", name)
                 .getSingleResult();
-        } catch (NoResultException e){
+        } catch (NoResultException e) {
             return null;
         }
     }
