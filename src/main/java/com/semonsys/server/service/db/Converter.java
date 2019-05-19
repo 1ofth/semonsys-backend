@@ -21,6 +21,7 @@ final class Converter {
         ParamTO param = new ParamTO();
 
         param.setTime(((BigInteger) object[TIME_COLUMN]).longValue());
+
         if (object[INTEGER_COLUMN] != null) {
             param.setValue(((Integer) object[INTEGER_COLUMN]).toString());
         } else if (object[DOUBLE_COLUMN] != null) {

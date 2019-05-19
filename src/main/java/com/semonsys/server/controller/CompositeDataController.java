@@ -24,6 +24,7 @@ import java.rmi.RemoteException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
 
 @Stateless
 @Path(PathHolder.COMPOSITE_DATA_PATH)
@@ -106,8 +107,8 @@ public class CompositeDataController {
     @Path(PathHolder.COMPOSITE_DATA_SERIES_PATH)
     @Interceptors(MethodParamsInterceptor.class)
     public Response getSeries(@QueryParam("server") final String serverName,
-                              @QueryParam("group") final String dataGroupName,
-                              @QueryParam("type") final String dataTypeName,
+                              @QueryParam("group") final String dataTypeName,
+                              @QueryParam("type") final String dataGroupName,
                               @QueryParam("time") final Long time,
                               @QueryParam("identifier") final String identifier) {
 

@@ -10,10 +10,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Stateless
 public class SingleDataService {
@@ -46,7 +43,7 @@ public class SingleDataService {
     }
 
     public Set<SingleDataTO> findLastSingleDataPack(final String dataGroupName, final long serverId) {
-        Set<SingleDataTO> result = new HashSet<>();
+        Set<SingleDataTO> result = new TreeSet<>();
 
         String query = "SELECT \n"
             + "    dt.name,\n"
@@ -64,7 +61,10 @@ public class SingleDataService {
             + "    JOIN data_group\n"
             + "        ON(data.data_group_id = data_group.id)\n"
             + "WHERE\n"
-            + "    data.time = (\n"
+            + "    comp_id IS NULL\n"
+            + "    AND data_group.name = :groupName\n"
+            + "    AND data.server_id = :serverId"
+            + "    AND data.time = (\n"
             + "        SELECT \n"
             + "            MAX(data.time) \n"
             + "        FROM \n"
@@ -72,9 +72,7 @@ public class SingleDataService {
             + "            JOIN data_type AS dt_inner\n"
             + "                ON(data.data_type_id = dt_inner.id)\n"
             + "        WHERE dt.id = dt_inner.id\n"
-            + "        )\n"
-            + "    AND data_group.name = :groupName\n"
-            + "    AND data.server_id = :serverId";
+            + "        )\n";
 
         List<Object[]> temp;
 

@@ -7,7 +7,7 @@ import com.semonsys.server.model.dao.SingleData;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CompositeDataTO {
+public class CompositeDataTO implements Comparable<CompositeDataTO> {
     @SerializedName(value = "i")
     private String identifier;
     @SerializedName(value = "d")
@@ -46,5 +46,10 @@ public class CompositeDataTO {
 
     public void setData(final List<SingleDataTO> data) {
         this.data = data;
+    }
+
+    @Override
+    public int compareTo(CompositeDataTO o) {
+        return identifier.compareTo(o.getIdentifier());
     }
 }

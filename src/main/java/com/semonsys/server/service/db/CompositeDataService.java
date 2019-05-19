@@ -13,10 +13,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Log4j
 @Stateless
@@ -49,6 +46,7 @@ public class CompositeDataService {
 
         String query = "SELECT \n"
             + "    dt.name,\n"
+            + "    dt.monitoring,\n"
             + "    data.time,\n"
             + "    param.int_value,\n"
             + "    param.float_value,\n"
@@ -102,10 +100,10 @@ public class CompositeDataService {
 
     @Interceptors(MethodParamsInterceptor.class)
     public Set<ParamTO> findAllParamsFromTimeWithIdentifier(final String group,
-                                                            final String type,
-                                                            final long serverId,
-                                                            final long time,
-                                                            final String identifier) {
+                                                                  final String type,
+                                                                  final long serverId,
+                                                                  final long time,
+                                                                  final String identifier) {
         String query = "SELECT \n"
             + "    data.time,\n"
             + "    param.int_value,\n"

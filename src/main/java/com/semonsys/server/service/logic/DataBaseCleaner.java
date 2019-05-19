@@ -26,6 +26,9 @@ public class DataBaseCleaner {
             .setParameter("time", time)
             .executeUpdate();
 
+        entityManager.createNativeQuery(
+            "DELETE FROM param WHERE id NOT IN (SELECT param_id FROM data)"
+        ).executeUpdate();
 
         log.info("Deleting old data finished");
     }

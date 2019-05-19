@@ -5,7 +5,7 @@ import com.semonsys.server.model.dao.SingleData;
 
 import java.util.Objects;
 
-public class SingleDataTO {
+public class SingleDataTO implements Comparable<SingleDataTO> {
     @SerializedName(value = "p")
     private ParamTO param = null;
     @SerializedName(value = "t")
@@ -72,5 +72,10 @@ public class SingleDataTO {
     @Override
     public int hashCode() {
         return Objects.hash(param, type, monitoring);
+    }
+
+    @Override
+    public int compareTo(SingleDataTO o) {
+        return type.compareTo(o.getType());
     }
 }

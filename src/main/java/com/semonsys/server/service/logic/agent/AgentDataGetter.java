@@ -83,6 +83,10 @@ public class AgentDataGetter {
 
         List<AgentSingleData> dataFromAgent = stub.getData(timeFrom);
 
+        if(dataFromAgent == null){
+            return;
+        }
+
         log.info("Loaded " + dataFromAgent.size() + " rows from '" + server.getName() + "' agent.");
 
         // there may be some data which would be stored as composite data (field "compositeDataIdentifier")
@@ -144,7 +148,6 @@ public class AgentDataGetter {
             type.setMonitoring(true);
         } else {
             type.setMonitoring(false);
-            type.setDescription("WAS STRING");
         }
 
         type.setName(data.getDataTypeName());
