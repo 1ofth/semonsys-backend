@@ -73,7 +73,7 @@ public class ServerController {
     @GET
     @Path(PathHolder.SERVER_ACTIVATION_PATH)
     public Response activateServer(@QueryParam("name") final String serverName) {
-        if (serverName == null) {
+        if (serverName == null || serverName.equals("")) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Parameters are incorrect").build();
         }
 

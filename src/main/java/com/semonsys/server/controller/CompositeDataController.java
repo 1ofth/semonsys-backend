@@ -107,10 +107,10 @@ public class CompositeDataController {
     @Path(PathHolder.COMPOSITE_DATA_SERIES_PATH)
     @Interceptors(MethodParamsInterceptor.class)
     public Response getSeries(@QueryParam("server") final String serverName,
-                              @QueryParam("group") final String dataTypeName,
+                              @QueryParam("group") final String identifier,
                               @QueryParam("type") final String dataGroupName,
                               @QueryParam("time") final Long time,
-                              @QueryParam("identifier") final String identifier) {
+                              @QueryParam("identifier") final String dataTypeName ) {
 
         if (serverName == null || dataGroupName == null || dataTypeName == null || time == null || identifier == null) {
             return Response.status(Response.Status.BAD_REQUEST).build();
