@@ -83,7 +83,7 @@ public class AgentDataGetter {
 
         List<AgentSingleData> dataFromAgent = stub.getData(timeFrom);
 
-        if(dataFromAgent == null){
+        if (dataFromAgent == null) {
             return;
         }
 

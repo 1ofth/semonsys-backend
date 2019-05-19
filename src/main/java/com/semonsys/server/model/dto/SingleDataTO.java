@@ -75,7 +75,7 @@ public class SingleDataTO implements Comparable<SingleDataTO> {
     }
 
     @Override
-    public int compareTo(SingleDataTO o) {
+    public int compareTo(final SingleDataTO o) {
         return type.compareTo(o.getType());
     }
 }

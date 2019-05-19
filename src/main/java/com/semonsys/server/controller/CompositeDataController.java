@@ -24,7 +24,6 @@ import java.rmi.RemoteException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.SortedSet;
 
 @Stateless
 @Path(PathHolder.COMPOSITE_DATA_PATH)
@@ -110,7 +109,7 @@ public class CompositeDataController {
                               @QueryParam("group") final String identifier,
                               @QueryParam("type") final String dataGroupName,
                               @QueryParam("time") final Long time,
-                              @QueryParam("identifier") final String dataTypeName ) {
+                              @QueryParam("identifier") final String dataTypeName) {
 
         if (serverName == null || dataGroupName == null || dataTypeName == null || time == null || identifier == null) {
             return Response.status(Response.Status.BAD_REQUEST).build();
