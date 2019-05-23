@@ -17,6 +17,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -88,7 +89,7 @@ public class ServerController {
             serverService.update(server);
             return Response.ok().build();
         } else {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Agent was already created").build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Agent connection error").build();
         }
     }
 
@@ -137,18 +138,24 @@ public class ServerController {
     // update any data of server
     @PUT
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response changeServer(@FormParam("name") final String name,
+    @Path("/{oldName}")
+    public Response changeServer(@PathParam("oldName") final String oldName,
+                                 @FormParam("name") final String name,
                                  @FormParam("description") final String description,
                                  @FormParam("ip") final String ip,
                                  @FormParam("port") final String port) {
 
-        if (name == null || description == null && ip == null && port == null) {
+        if (name == null && description == null && ip == null && port == null) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Parameters are incorrect").build();
         }
 
-        Server server = serverService.find(securityContext.getUserPrincipal().getName(), name);
+        Server server = serverService.find(securityContext.getUserPrincipal().getName(), oldName);
         if (server == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        if (name != null) {
+            server.setName(name);
         }
 
         if (description != null) {
