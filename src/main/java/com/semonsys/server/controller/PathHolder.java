@@ -10,7 +10,7 @@ final class PathHolder {
 
     static final String AUTH_PATH = "/rest";
     static final String LOGOUT_PATH = "/secured/logout";
-    static final String REFRESH_TOKENS_PATH = "/secured/refresh-tokens";
+    static final String REFRESH_TOKENS_PATH = "/refresh-tokens";
     static final String LOGIN_PATH = "/login";
 
     static final String COMPOSITE_DATA_PATH = "/rest/secured/data/comp";

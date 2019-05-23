@@ -2,6 +2,7 @@ package com.semonsys.server.service.logic.agent;
 
 import com.semonsys.server.model.dao.Server;
 import com.semonsys.server.service.db.ServerService;
+import com.semonsys.server.service.logic.MailService;
 import lombok.extern.log4j.Log4j;
 
 import javax.ejb.EJB;
@@ -23,6 +24,8 @@ public class AgentDataImporter {
     @EJB
     private AgentDataGetter agentDataGetter;
 
+    @EJB
+    private MailService mailService;
 
     @Lock(LockType.READ)
     @Schedule(second = "00", minute = "*/15", hour = "*", persistent = false)
@@ -49,6 +52,8 @@ public class AgentDataImporter {
 
                 finished += 1;
             } catch (RemoteException | NotBoundException ignore) {
+                mailService.send("Error connecting to the server with name " + serverName,
+                        server.getUser().getEmail());
                 log.error("Loading data from '" + serverName + "' agent failed.");
             }
         }

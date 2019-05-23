@@ -44,8 +44,8 @@ public class RegistrationController {
             String appUrl = request.getRequestURL().toString().replace("/registration", "");
             registrationService.sendConfirmationMessage(user, appUrl);
             return Response.status(Response.Status.CREATED)
-                .entity("{user: '" + login + "'}")
-                .build();
+                    .entity("{user: '" + login + "'}")
+                    .build();
         }
         return Response.status(Response.Status.BAD_REQUEST).build();
     }
@@ -70,7 +70,7 @@ public class RegistrationController {
     }
 
     @GET
-    @Path(PathHolder.CONFIRM_REGISTRATION_PATH + "{token}")
+    @Path(PathHolder.CONFIRM_REGISTRATION_PATH + "/{token}")
     public Response confirmRegistration(@PathParam("token") final String token) {
         User user = userService.findUserByToken(token);
         if (user == null || !user.getVerificationToken().equals(token)) {

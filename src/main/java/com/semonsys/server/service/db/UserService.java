@@ -1,6 +1,7 @@
 package com.semonsys.server.service.db;
 
 import com.semonsys.server.model.dao.User;
+import com.semonsys.server.security.Encoder;
 import lombok.Setter;
 
 import javax.ejb.Stateless;
@@ -17,6 +18,7 @@ public class UserService {
     private EntityManager entityManager;
 
     public void save(final User user) {
+        user.setPassword(Encoder.generatePasswordHash(user.getPassword()));
         entityManager.persist(user);
     }
 
@@ -39,8 +41,8 @@ public class UserService {
     public User findUserByToken(final String token) {
         try {
             return entityManager.createQuery("select u from User u where u.verificationToken = :token", User.class)
-                .setParameter("token", token)
-                .getSingleResult();
+                    .setParameter("token", token)
+                    .getSingleResult();
         } catch (NoResultException n) {
             return null;
         }

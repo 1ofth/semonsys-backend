@@ -1,9 +1,7 @@
-package com.semonsys.server.service;
+package com.semonsys.server.service.db;
 
 import com.semonsys.server.model.dao.DataType;
-import com.semonsys.server.service.db.DataTypeService;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.persistence.EntityManager;
@@ -28,8 +26,6 @@ public class DataTypeServiceTest {
         this.service.setEntityManager(manager);
     }
 
-    @Ignore
-    // TODO how can I use queries with args? Throws NP on line '... = service.find("user1");'
     @Test
     public void shouldFindByUserLogin() {
         List<DataType> expected = new ArrayList<>(Arrays.asList(
@@ -40,6 +36,7 @@ public class DataTypeServiceTest {
 
         TypedQuery<DataType> mockedQuery = mock(TypedQuery.class);
 
+        when(mockedQuery.setParameter(anyString(), anyString())).thenReturn(mockedQuery);
         when(mockedQuery.getResultList()).thenReturn(expected);
 
         when(this.manager.createQuery(anyString(), any(Class.class)))

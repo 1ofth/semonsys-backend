@@ -26,9 +26,9 @@ import java.util.UUID;
 @Stateless
 @Log
 public class JwtManager {
-    public static final int SECONDS_PER_TEN_DAYS = 3600 * 24 * 10;
     public static final int SECONDS_IN_FIVE_HOURS = 5 * 60 * 60;
     public static final int MILLISECONDS_IN_SECOND = 1000;
+    private static final int SECONDS_PER_TEN_DAYS = 3600 * 24 * 10;
     private static final String CLAIM_ROLES = "groups";
     private static final String ISSUER = "quickstart-jwt-issuer";
     private static final String AUDIENCE = "jwt-audience";
@@ -49,32 +49,32 @@ public class JwtManager {
         JsonArrayBuilder rolesBuilder = Json.createArrayBuilder();
         Arrays.stream(roles).forEach(rolesBuilder::add);
         JsonObjectBuilder claimsBuilder = Json.createObjectBuilder()
-            .add("sub", subject)
-            .add("iss", ISSUER)
-            .add("aud", AUDIENCE)
-            .add(CLAIM_ROLES, rolesBuilder.build())
-            .add("exp", System.currentTimeMillis() / MILLISECONDS_IN_SECOND
-                + SECONDS_IN_FIVE_HOURS);
+                .add("sub", subject)
+                .add("iss", ISSUER)
+                .add("aud", AUDIENCE)
+                .add(CLAIM_ROLES, rolesBuilder.build())
+                .add("exp", System.currentTimeMillis() / MILLISECONDS_IN_SECOND
+                        + SECONDS_IN_FIVE_HOURS);
         return buildToken(claimsBuilder);
     }
 
     public String createRefreshToken(final String username) {
         JsonObjectBuilder claimsBuilder = Json.createObjectBuilder()
-            .add("sub", username)
-            .add("iss", ISSUER)
-            .add("aud", AUDIENCE)
-            .add("id", UUID.randomUUID().toString())
-            .add("scopes", REFRESH_TOKEN)
-            .add("exp", System.currentTimeMillis() / MILLISECONDS_IN_SECOND
-                + SECONDS_PER_TEN_DAYS);
+                .add("sub", username)
+                .add("iss", ISSUER)
+                .add("aud", AUDIENCE)
+                .add("id", UUID.randomUUID().toString())
+                .add("scopes", REFRESH_TOKEN)
+                .add("exp", System.currentTimeMillis() / MILLISECONDS_IN_SECOND
+                        + SECONDS_PER_TEN_DAYS);
         return buildToken(claimsBuilder);
     }
 
     private String buildToken(final JsonObjectBuilder claimsBuilder) {
         JWSSigner signer = new RSASSASigner(privateKey);
         JWSObject jwsObject = new JWSObject(new JWSHeader.Builder(JWSAlgorithm.RS256)
-            .type(new JOSEObjectType("jwt")).build(),
-            new Payload(claimsBuilder.build().toString()));
+                .type(new JOSEObjectType("jwt")).build(),
+                new Payload(claimsBuilder.build().toString()));
         try {
             jwsObject.sign(signer);
         } catch (JOSEException e) {
